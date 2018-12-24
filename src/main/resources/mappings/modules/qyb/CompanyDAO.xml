@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.qyb.dao.CompanyDAO">
+  <resultMap id="BaseResultMap" type="com.thinkgem.jeesite.modules.qyb.entity.Company">
+    <id column="id" jdbcType="VARCHAR" property="id"/>
+    <result column="name" jdbcType="VARCHAR" property="name"/>
+    <result column="logo" jdbcType="VARCHAR" property="logo"/>
+    <result column="city" jdbcType="VARCHAR" property="city"/>
+    <result column="industry" jdbcType="VARCHAR" property="industry"/>
+    <result column="introdction" jdbcType="VARCHAR" property="introdction"/>
+    <result column="site" jdbcType="VARCHAR" property="site"/>
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, name, logo, city, industry, introdction, site
+  </sql>
+  <select id="get" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from w_company
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete
+    from w_company
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.thinkgem.jeesite.modules.qyb.entity.Company">
+    insert into w_company (id, ` name `, logo, city, industry, introdction, site)
+    values (#{id,jdbcType=VARCHAR},
+            #{name,jdbcType=VARCHAR},
+            #{logo,jdbcType=VARCHAR},
+            #{city,jdbcType=VARCHAR},
+            #{industry,jdbcType=VARCHAR},
+            #{introdction,jdbcType=VARCHAR},
+            #{site,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.thinkgem.jeesite.modules.qyb.entity.Company">
+    insert into w_company
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="name != null">
+        `name`,
+      </if>
+      <if test="logo != null">
+        logo,
+      </if>
+      <if test="city != null">
+        city,
+      </if>
+      <if test="industry != null">
+        industry,
+      </if>
+      <if test="introdction != null">
+        introdction,
+      </if>
+      <if test="site != null">
+        site,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="logo != null">
+        #{logo,jdbcType=VARCHAR},
+      </if>
+      <if test="city != null">
+        #{city,jdbcType=VARCHAR},
+      </if>
+      <if test="industry != null">
+        #{industry,jdbcType=VARCHAR},
+      </if>
+      <if test="introdction != null">
+        #{introdction,jdbcType=VARCHAR},
+      </if>
+      <if test="site != null">
+        #{site,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.thinkgem.jeesite.modules.qyb.entity.Company">
+    update w_company
+    <set>
+      <if test="name != null">
+        `name` = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="logo != null">
+        logo = #{logo,jdbcType=VARCHAR},
+      </if>
+      <if test="city != null">
+        city = #{city,jdbcType=VARCHAR},
+      </if>
+      <if test="industry != null">
+        industry = #{industry,jdbcType=VARCHAR},
+      </if>
+      <if test="introdction != null">
+        introdction = #{introdction,jdbcType=VARCHAR},
+      </if>
+      <if test="site != null">
+        site = #{site,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.thinkgem.jeesite.modules.qyb.entity.Company">
+    update w_company
+    set ` name ` = #{name,jdbcType=VARCHAR},
+        logo = #{logo,jdbcType=VARCHAR},
+        city = #{city,jdbcType=VARCHAR},
+        industry = #{industry,jdbcType=VARCHAR},
+        introdction = #{introdction,jdbcType=VARCHAR},
+        site = #{site,jdbcType=VARCHAR}
+        where id = #{id,jdbcType=VARCHAR}
+  </update>
+
+  <select id="findList" resultType="Company">
+    SELECT
+    id,
+    name,
+    logo,
+    industry,
+    (SELECT count(1) FROM w_user u WHERE u.company_id=c.id) AS "userCount",
+    (SELECT count(1) FROM w_cooperation wcp  WHERE wcp.company_id=c.id) AS "cooperationCount"
+    FROM w_company c
+    WHERE
+    1=1
+      <if test="name != null and name != ''">
+         AND c.name like CONCAT('%',#{name},'%')
+      </if>
+  </select>
+</mapper>
