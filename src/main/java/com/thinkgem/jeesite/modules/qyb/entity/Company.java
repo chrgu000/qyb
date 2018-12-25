@@ -12,6 +12,7 @@ public class Company extends DataEntity<Company> {
      */
     private String name;
 
+
     /**
      * 公司logo
      */

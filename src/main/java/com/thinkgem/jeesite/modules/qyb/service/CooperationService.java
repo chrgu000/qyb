@@ -7,14 +7,28 @@ import com.thinkgem.jeesite.modules.qyb.entity.Cooperation;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import java.util.List;
 
 @Service
 @Transactional(readOnly = true)
 public class CooperationService extends CrudService<CooperationDAO, Cooperation> {
 
+  @Resource
+  private WUserService wUserService;
+
+  public List<Cooperation> findCotList(String cpyId) {
+    return dao.findCotList(cpyId);
+  }
+
   public List<Cooperation> findList(Cooperation entity) {
     return dao.findList(entity);
+  }
+
+  @Transactional(readOnly = false)
+  public void save(Cooperation entity) {
+    wUserService.subAdv(entity.getUser().getId());
+    super.save(entity);
   }
 
   public Adver getAdver() {
@@ -35,10 +49,8 @@ public class CooperationService extends CrudService<CooperationDAO, Cooperation>
     dao.updateStatus(entity);
   }
 
-
-
-  public List<Cooperation >findCotList(String cpyId){
-    return dao.findCotList(cpyId);
+  public int updateViews(String id) {
+    return dao.updateViews(id);
   }
 
 }

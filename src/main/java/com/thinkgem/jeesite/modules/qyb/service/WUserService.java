@@ -16,8 +16,17 @@ public class WUserService extends CrudService<UserDAO, WUser> {
     return dao.findByCpy(cpyId);
   }
 
-  public WUser getByOpenid(String openid) {
-    return dao.getByOpenid(openid);
+  public int getAdvCount(String id) {
+    return dao.getAdvCount(id);
+  }
+
+  public WUser getByInfo(WUser entity) {
+    return dao.getByInfo(entity);
+  }
+
+  @Transactional(readOnly = false)
+  public int subAdv(String id) {
+    return dao.subAdv(id);
   }
 
   @Transactional(readOnly = false)

@@ -1,10 +1,7 @@
 package com.thinkgem.jeesite.common.fastweixin.api;
 
-import com.alibaba.fastjson.JSON;
 import com.thinkgem.jeesite.common.fastweixin.api.config.ApiConfig;
-import com.thinkgem.jeesite.common.fastweixin.api.enums.ResultType;
 import com.thinkgem.jeesite.common.fastweixin.api.response.BaseResponse;
-import com.thinkgem.jeesite.common.fastweixin.api.response.GetSendMessageResponse;
 import com.thinkgem.jeesite.common.fastweixin.api.response.SnsTokenResponse;
 import com.thinkgem.jeesite.common.fastweixin.util.BeanUtil;
 import com.thinkgem.jeesite.common.fastweixin.util.JSONUtil;
@@ -25,6 +22,7 @@ public class SessionApi extends BaseAPI {
   public SnsTokenResponse executeSGet(String url, String code) {
     BaseResponse response;
     BeanUtil.requireNonNull(url, "url is null");
+    url = BASE_API_URL + url;
     //需要传token
     String getUrl = url.replace("#", code);
     response = NetWorkCenter.get(getUrl);

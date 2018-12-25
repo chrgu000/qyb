@@ -13,14 +13,18 @@ import java.util.List;
 @MyBatisDao
 public interface CooperationDAO extends CrudDao<Cooperation> {
 
+  List<Cooperation> findCotList(String cpyId);
+
   Adver getAdver();
+
+  Cooperation getDetail(String id);
 
   void udpateAdver(Adver adver);
 
   void updateStatus(Cooperation entity);
 
-  Cooperation getDetail(String id);
+  int updateViews(String id);
 
-  List<Cooperation> findCotList(String cpyId);
+  List<Cooperation> findByUser(String userId);
 
 }

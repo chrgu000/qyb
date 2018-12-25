@@ -2,6 +2,8 @@ package com.thinkgem.jeesite.modules.qyb.entity;
 
 import com.thinkgem.jeesite.common.persistence.DataEntity;
 
+import java.math.BigDecimal;
+
 /**
  * w_user
  * @author 
@@ -63,6 +65,57 @@ public class WUser extends DataEntity<WUser> {
     private Company company;
 
     private String openid;
+
+    /**
+     * 可发广告数量
+     */
+    private Integer advCount;
+
+    /**
+     * 查看电话数量
+     */
+    private Integer phCount;
+
+    /**
+     * 剩余现金
+     */
+    private BigDecimal balance;
+
+
+    private Integer companion;
+
+
+    public Integer getCompanion() {
+        return companion;
+    }
+
+    public void setCompanion(Integer companion) {
+        this.companion = companion;
+    }
+
+    public Integer getAdvCount() {
+        return advCount;
+    }
+
+    public void setAdvCount(Integer advCount) {
+        this.advCount = advCount;
+    }
+
+    public Integer getPhCount() {
+        return phCount;
+    }
+
+    public void setPhCount(Integer phCount) {
+        this.phCount = phCount;
+    }
+
+    public BigDecimal getBalance() {
+        return balance;
+    }
+
+    public void setBalance(BigDecimal balance) {
+        this.balance = balance;
+    }
 
     public String getOpenid() {
         return openid;

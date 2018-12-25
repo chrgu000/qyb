@@ -28,12 +28,10 @@
     where id = #{id,jdbcType=VARCHAR}
   </delete>
   <insert id="insert" parameterType="com.thinkgem.jeesite.modules.qyb.entity.Cooperation">
-    insert into w_cooperation (id, user_id, company_id, title, area, way, offer_resource, need_resource, `
-                               status
-                               `)
+    insert into w_cooperation (id, user_id, company_id, title, area, way, offer_resource, need_resource, `status`)
     values (#{id,jdbcType=VARCHAR},
-            #{userId,jdbcType=VARCHAR},
-            #{companyId,jdbcType=VARCHAR},
+            #{user.id,jdbcType=VARCHAR},
+            #{company.id,jdbcType=VARCHAR},
             #{title,jdbcType=VARCHAR},
             #{area,jdbcType=VARCHAR},
             #{way,jdbcType=VARCHAR},
@@ -253,6 +251,20 @@
     JOIN w_company c ON cp.company_id = c.id
     WHERE cp.company_id=#{cpyId}
     ORDER BY cp.create_date DESC
+  </select>
+
+
+  <update id="updateViews">
+    update w_cooperation
+    set views=views+1
+    where id=#{id}
+  </update>
+
+  <select id="findByUser" resultType="Cooperation">
+    select wc.offer_resource AS "offerResource",
+    wc.views
+    FROM w_cooperation wc
+    WHERE user_id=#{userId}
   </select>
 
 </mapper>

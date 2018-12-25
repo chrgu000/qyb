@@ -25,7 +25,7 @@
     where id = #{id,jdbcType=VARCHAR}
   </delete>
   <insert id="insert" parameterType="com.thinkgem.jeesite.modules.qyb.entity.Company">
-    insert into w_company (id, ` name `, logo, city, industry, introdction, site)
+    insert into w_company (id, `name` , logo, city, industry, introdction, site)
     values (#{id,jdbcType=VARCHAR},
             #{name,jdbcType=VARCHAR},
             #{logo,jdbcType=VARCHAR},
@@ -83,7 +83,7 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.thinkgem.jeesite.modules.qyb.entity.Company">
+  <update id="update" parameterType="com.thinkgem.jeesite.modules.qyb.entity.Company">
     update w_company
     <set>
       <if test="name != null">
@@ -107,9 +107,9 @@
     </set>
     where id = #{id,jdbcType=VARCHAR}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.thinkgem.jeesite.modules.qyb.entity.Company">
+  <update id="updatexx" parameterType="com.thinkgem.jeesite.modules.qyb.entity.Company">
     update w_company
-    set ` name ` = #{name,jdbcType=VARCHAR},
+    set `name` = #{name,jdbcType=VARCHAR},
         logo = #{logo,jdbcType=VARCHAR},
         city = #{city,jdbcType=VARCHAR},
         industry = #{industry,jdbcType=VARCHAR},

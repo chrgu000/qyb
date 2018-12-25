@@ -1,6 +1,5 @@
 package com.thinkgem.jeesite.modules.qyb.webf;
 
-import com.alibaba.fastjson.JSON;
 import com.thinkgem.jeesite.common.fastweixin.api.SessionApi;
 import com.thinkgem.jeesite.common.fastweixin.api.config.ApiConfig;
 import com.thinkgem.jeesite.common.fastweixin.api.response.SnsTokenResponse;
@@ -39,6 +38,11 @@ public class QybController extends BaseController {
   @Resource
   private WCommentService wCommentService;
 
+  @RequestMapping(value = {"company/info"})
+  public String companyInfo(HttpServletRequest request, HttpServletResponse response, String id) {
+    Company company = companyService.get(id);
+    return renderString(response, BaseResponse.success(company));
+  }
 
   @RequestMapping(value = {"company/list"})
   public String companyList(HttpServletRequest request, HttpServletResponse response, Company company) {
@@ -46,16 +50,28 @@ public class QybController extends BaseController {
     return renderString(response, BaseResponse.success("success", page));
   }
 
-  @RequestMapping(value = {"company/info"})
-  public String companyInfo(HttpServletRequest request, HttpServletResponse response, String id) {
-    Company company = companyService.get(id);
-    return renderString(response, BaseResponse.success(company));
-  }
-
   @RequestMapping(value = {"cooperation/detail"})
   public String coopDetail(Cooperation entity, HttpServletRequest request, HttpServletResponse response) {
     Cooperation cooperation = cooperationService.getDetail(entity.getId());
     return renderString(response, BaseResponse.success(cooperation));
+  }
+
+  @RequestMapping(value = "company/save", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
+  public String cpySave(HttpServletResponse response, @RequestBody Company entity) {
+    companyService.save(entity);
+    return renderString(response, BaseResponse.success("保存成功"));
+  }
+
+  @RequestMapping(value = {"cooperation/findCotList"})
+  public String findCotList(String cpyId, HttpServletResponse response) {
+    List<Cooperation> list = cooperationService.findCotList(cpyId);
+    return renderString(response, BaseResponse.success(list));
+  }
+
+  @RequestMapping(value = {"user/getAdvCount"})
+  public String getAdvCount(String id, HttpServletResponse response) {
+    Integer advCount = userService.getAdvCount(id);
+    return renderString(response, BaseResponse.success(advCount));
   }
 
   @RequestMapping(value = "getAdver", produces = "application/json")
@@ -69,7 +85,7 @@ public class QybController extends BaseController {
       String[] array = adver.getPhoto().split("\\|");
       for (String str : array)
         if (StringUtils.isNoneBlank(str)) {
-          adverList.add(new Adver("1", "http://localhost:8181" + str));
+          adverList.add(new Adver(str));
         }
     }
     return renderString(response, BaseResponse.success("success", adverList));
@@ -87,15 +103,18 @@ public class QybController extends BaseController {
     return renderString(response, BaseResponse.success(list));
   }
 
-  @RequestMapping(value = "user/info")
-  public String getUserInfo(HttpServletResponse response, String openid) {
-    if (StringUtils.isNoneBlank(openid)) {
-      WUser user = userService.getByOpenid(openid);
-      return renderString(response, BaseResponse.success(user));
-    } else {
-      return renderString(response, BaseResponse.error("参数错误!"));
-    }
+  @RequestMapping(value = {"wechat/jscode2session"})
+  public String getOpenid(HttpServletResponse response, String jsCode) {
+    SessionApi sessionApi = new SessionApi(new ApiConfig("", ""));
+    //code = "071fUVQd1kfk7z0fR7Nd19MdRd1fUVQt";
+    SnsTokenResponse re = sessionApi.executeSGet("sns/jscode2session?appid=wx5c84c78d3db89dd7&secret=acebf60dc60ac46277d4a17f76722238&js_code=#&grant_type=authorization_code", jsCode);
+    return renderString(response, BaseResponse.success(re));
+  }
 
+  @RequestMapping(value = "user/info")
+  public String getUserInfo(HttpServletResponse response, WUser entity) {
+    WUser user = userService.getByInfo(entity);
+    return renderString(response, BaseResponse.success(user));
   }
 
   @RequestMapping(value = {"cooperation/list"})
@@ -104,24 +123,31 @@ public class QybController extends BaseController {
     return renderString(response, BaseResponse.success(page));
   }
 
+  @RequestMapping(value = "register")
+  public String register(HttpServletResponse response, WUser user) {
+    userService.save(user);
+    return renderString(response, BaseResponse.success("注册成功"));
+  }
+
   @RequestMapping(value = "cooperation/save", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
   public String save(HttpServletResponse response, @RequestBody Cooperation entity) {
     cooperationService.save(entity);
     return renderString(response, BaseResponse.success("发布成功"));
   }
 
-  @RequestMapping(value = {"cooperation/findCotList"})
-  public String findCotList(String cpyId,HttpServletResponse response){
-    List<Cooperation> list = cooperationService.findCotList(cpyId);
-    return renderString(response, BaseResponse.success(list));
+  @RequestMapping(value = "updateViews")
+  public String updateViews(String id, HttpServletResponse response) {
+
+    cooperationService.updateViews(id);
+
+    return renderString(response, BaseResponse.success("success"));
+
   }
 
 
-  @RequestMapping(value = {"getOpenId"})
-  public String getOpenid(HttpServletResponse response){
-    SessionApi sessionApi=new SessionApi(new ApiConfig("",""));
-    String code="071fUVQd1kfk7z0fR7Nd19MdRd1fUVQt";
-    SnsTokenResponse re= sessionApi.executeSGet("sns/jscode2session?appid=wxa2df920f1bbc2e1d&secret=SECRET&js_code=#&grant_type=authorization_code",code);
-    return renderString(response,BaseResponse.success(re));
+  @RequestMapping(value = "/wx/notify_url")
+  public String wxNotify(String id, HttpServletResponse response) {
+    cooperationService.updateViews(id);
+    return renderString(response, BaseResponse.success("success"));
   }
 }

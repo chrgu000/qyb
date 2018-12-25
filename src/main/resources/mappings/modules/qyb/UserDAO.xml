@@ -32,12 +32,32 @@
   </select>
 
 
-  <select id="getByOpenid" resultType="WUser">
+  <select id="getByInfo" resultType="WUser">
     SELECT
-    <include refid="Base_Column_List"/>,
-    avatar
+    u.id,
+    u.openid,
+    u.name,
+    u.position,
+    u.vip_level AS "vipLevel",
+    u.mobile,
+    u.company_id AS "company.id",
+    u.create_date AS "createDate",
+    u.avatar, cp.name AS "company.name",
+    u.adv_count AS "advCount",
+    u.ph_count AS "phCount",
+    u.balance,
+    u.companion
     FROM w_user u
-    WHERE openid=#{openid}
+    JOIN w_company cp ON cp.id=u.company_id
+    <where>
+      1=1
+      <if test="openid != null and openid != '' ">
+        AND u.openid=#{openid}
+      </if>
+      <if test="id != null and id != ''">
+        AND u.id=#{id};
+      </if>
+    </where>
   </select>
 
 
@@ -47,8 +67,9 @@
     where id = #{id,jdbcType=VARCHAR}
   </delete>
   <insert id="insert" parameterType="com.thinkgem.jeesite.modules.qyb.entity.WUser">
-    insert into w_user (id, company_id, vip_level, ` name `, mobile, sex, avatar, country, province, city, area)
+    insert into w_user (id, openid,company_id, vip_level, `name`, mobile, sex, avatar, country, province, city, area)
     values (#{id,jdbcType=VARCHAR},
+            #{openid,jdbcType=VARCHAR},
             #{companyId,jdbcType=VARCHAR},
             #{vipLevel,jdbcType=BIT},
             #{name,jdbcType=VARCHAR},
@@ -223,5 +244,18 @@
     w_user u
     WHERE u.company_id=#{cpyId}
   </select>
+
+
+  <update id="subAdv">
+  update w_user
+  set adv_count=adv_count-1
+  where id=#{id}
+</update>
+
+  <select id="getAdvCount" resultType="java.lang.Integer">
+    select adv_count FROM w_user
+    WHERE id=#{id}
+  </select>
+
 
 </mapper>

@@ -10,7 +10,11 @@ public class Adver extends DataEntity<Adver> {
     this.photo = photo;
   }
 
-  public Adver() {
+  public Adver(String photo) {
+    this.photo=photo;
+  }
+
+  public Adver(){
 
   }
 
