@@ -107,7 +107,7 @@ public class QybController extends BaseController {
   public String getOpenid(HttpServletResponse response, String jsCode) {
     SessionApi sessionApi = new SessionApi(new ApiConfig("", ""));
     //code = "071fUVQd1kfk7z0fR7Nd19MdRd1fUVQt";
-    SnsTokenResponse re = sessionApi.executeSGet("sns/jscode2session?appid=wx5c84c78d3db89dd7&secret=acebf60dc60ac46277d4a17f76722238&js_code=#&grant_type=authorization_code", jsCode);
+    SnsTokenResponse re = sessionApi.executeSGet("sns/jscode2session?appid=wxa2df920f1bbc2e1d&secret=9217ff71cb332917ccf0ba2ffc7f675c&js_code=#&grant_type=authorization_code", jsCode);
     return renderString(response, BaseResponse.success(re));
   }
 
