@@ -48,6 +48,11 @@ public class WUserController extends BaseController {
   @RequestMapping(value = "updateLevel")
   public String updateLevel(Model model, WUser wUser) {
     wUserService.updateLevel(wUser);
+
+    if(wUser.getVipLevel()==1){
+
+    }
+
     addMessage(model, "修改成功！");
     return "redirect:" + adminPath + "/qyb/wUser/list?id="+wUser.getId();
   }

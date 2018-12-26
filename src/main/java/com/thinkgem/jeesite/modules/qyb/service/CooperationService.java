@@ -48,7 +48,7 @@ public class CooperationService extends CrudService<CooperationDAO, Cooperation>
   public void updateStatus(Cooperation entity) {
     dao.updateStatus(entity);
   }
-
+  @Transactional(readOnly = false)
   public int updateViews(String id) {
     return dao.updateViews(id);
   }
