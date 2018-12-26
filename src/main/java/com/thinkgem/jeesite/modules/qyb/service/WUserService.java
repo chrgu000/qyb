@@ -34,4 +34,9 @@ public class WUserService extends CrudService<UserDAO, WUser> {
     return dao.updateLevel(entity);
   }
 
+  @Transactional(readOnly = false)
+  public int updateByOpenid(WUser user){
+    return dao.updateByOpenid(user);
+  }
+
 }

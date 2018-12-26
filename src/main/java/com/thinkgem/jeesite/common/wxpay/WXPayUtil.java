@@ -27,7 +27,11 @@ public class WXPayUtil {
     private static final String SYMBOLS = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
     private static final Random RANDOM = new SecureRandom();
-
+    public static String getPayNo() {
+        String yyyyMMddHHmmss = DateTimeUtil.getTimeShortString(new Date());
+        int str4 = (int) (Math.random() * 9000) + 1000;
+        return WXPayConstants.MCH_ID + yyyyMMddHHmmss + str4;
+    }
     /**
      * XML格式字符串转换为Map
      *
@@ -224,7 +228,7 @@ public class WXPayUtil {
      * @return String 随机字符串
      */
     public static String generateNonceStr() {
-        char[] nonceChars = new char[32];
+        char[] nonceChars = new char[31];
         for (int index = 0; index < nonceChars.length; ++index) {
             nonceChars[index] = SYMBOLS.charAt(RANDOM.nextInt(SYMBOLS.length()));
         }
@@ -291,5 +295,7 @@ public class WXPayUtil {
     public static long getCurrentTimestampMs() {
         return System.currentTimeMillis();
     }
+
+
 
 }

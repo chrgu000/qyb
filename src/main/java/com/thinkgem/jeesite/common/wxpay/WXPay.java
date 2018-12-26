@@ -5,6 +5,7 @@ package com.thinkgem.jeesite.common.wxpay;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.thinkgem.jeesite.common.utils.XmlMapHandle;
 import com.thinkgem.jeesite.common.wxpay.WXPayConstants.SignType;
 
 public class WXPay {
@@ -86,16 +87,16 @@ public class WXPay {
      * @throws Exception
      */
     public Map<String, String> fillRequestData(Map<String, String> reqData) throws Exception {
-        reqData.put("appid", config.getAppID());
-        reqData.put("mch_id", config.getMchID());
-        reqData.put("nonce_str", WXPayUtil.generateNonceStr());
-        if (SignType.MD5.equals(this.signType)) {
+        //reqData.put("appid", config.getAppID());
+        //reqData.put("mch_id", config.getMchID());
+       // reqData.put("nonce_str", WXPayUtil.generateNonceStr());
+/*        if (SignType.MD5.equals(this.signType)) {
             reqData.put("sign_type", WXPayConstants.MD5);
         }
         else if (SignType.HMACSHA256.equals(this.signType)) {
             reqData.put("sign_type", WXPayConstants.HMACSHA256);
-        }
-        reqData.put("sign", WXPayUtil.generateSignature(reqData, config.getKey(), this.signType));
+        }*/
+        //reqData.put("sign", WXPayUtil.generateSignature(reqData, config.getKey(), this.signType));
         return reqData;
     }
 
@@ -108,7 +109,7 @@ public class WXPay {
      */
     public boolean isResponseSignatureValid(Map<String, String> reqData) throws Exception {
         // 返回数据的签名方式和请求中给定的签名方式是一致的
-        return WXPayUtil.isSignatureValid(reqData, this.config.getKey(), this.signType);
+        return WXPayUtil.isSignatureValid(reqData, this.config.getKey(), SignType.MD5);
     }
 
     /**
@@ -156,6 +157,7 @@ public class WXPay {
                                      int connectTimeoutMs, int readTimeoutMs) throws Exception {
         String msgUUID = reqData.get("nonce_str");
         String reqBody = WXPayUtil.mapToXml(reqData);
+        System.out.println(reqBody);
 
         String resp = this.wxPayRequest.requestWithoutCert(urlSuffix, msgUUID, reqBody, connectTimeoutMs, readTimeoutMs, autoReport);
         return resp;
@@ -190,6 +192,8 @@ public class WXPay {
         String RETURN_CODE = "return_code";
         String return_code;
         Map<String, String> respData = WXPayUtil.xmlToMap(xmlStr);
+
+        //Map<String, String>  respData= XmlMapHandle.domToMap(xmlStr);
         if (respData.containsKey(RETURN_CODE)) {
             return_code = respData.get(RETURN_CODE);
         }
@@ -361,9 +365,9 @@ public class WXPay {
             url = WXPayConstants.UNIFIEDORDER_URL_SUFFIX;
         }
         if(this.notifyUrl != null) {
-            reqData.put("notify_url", this.notifyUrl);
+            //reqData.put("notify_url", this.notifyUrl);
         }
-        String respXml = this.requestWithoutCert(url, this.fillRequestData(reqData), connectTimeoutMs, readTimeoutMs);
+        String respXml = this.requestWithoutCert(url, reqData, connectTimeoutMs, readTimeoutMs);
         return this.processResponseXml(respXml);
     }
 

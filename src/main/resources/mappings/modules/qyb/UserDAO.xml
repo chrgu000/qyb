@@ -38,6 +38,7 @@
     u.openid,
     u.name,
     u.position,
+    u.companion,
     u.vip_level AS "vipLevel",
     u.mobile,
     u.company_id AS "company.id",
@@ -48,7 +49,7 @@
     u.balance,
     u.companion
     FROM w_user u
-    JOIN w_company cp ON cp.id=u.company_id
+    LEFT JOIN w_company cp ON cp.id=u.company_id
     <where>
       1=1
       <if test="openid != null and openid != '' ">
@@ -154,7 +155,7 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.thinkgem.jeesite.modules.qyb.entity.WUser">
+  <update id="update" parameterType="com.thinkgem.jeesite.modules.qyb.entity.WUser">
     update w_user
     <set>
       <if test="companyId != null">
@@ -163,8 +164,23 @@
       <if test="vipLevel != null">
         vip_level = #{vipLevel,jdbcType=BIT},
       </if>
+      <if test="advCount != null">
+        adv_count = #{advCount,jdbcType=INTEGER},
+      </if>
+      <if test="phCount != null">
+        ph_count = #{phCount,jdbcType=INTEGER},
+      </if>
+      <if test="companion != null">
+        companion = #{companion,jdbcType=INTEGER},
+      </if>
+      <if test="balance != null">
+        balance = #{balance,jdbcType=DECIMAL},
+      </if>
       <if test="name != null">
         `name` = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="position != null">
+        `position` = #{position,jdbcType=VARCHAR},
       </if>
       <if test="mobile != null">
         mobile = #{mobile,jdbcType=VARCHAR},
@@ -187,9 +203,52 @@
       <if test="area != null">
         area = #{area,jdbcType=VARCHAR},
       </if>
+      <if test="createDate != null">
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="delFlag != null">
+        del_flag = #{delFlag,jdbcType=CHAR},
+      </if>
     </set>
-    where id = #{id,jdbcType=VARCHAR}
+    <where>
+      1=1
+      <if test="id != null and id != ''">
+        AND id=#{id}
+      </if>
+      <if test="openid != nul and openid != '' ">
+        AND openid=#{openid}
+      </if>
+    </where>
   </update>
+
+
+
+  <update id="updateByOpenid" parameterType="com.thinkgem.jeesite.modules.qyb.entity.WUser">
+    update w_user
+    <set>
+      <if test="vipLevel != null">
+        vip_level = #{vipLevel,jdbcType=BIT},
+      </if>
+      <if test="advCount != null">
+        adv_count = #{advCount,jdbcType=INTEGER},
+      </if>
+      <if test="phCount != null">
+        ph_count = #{phCount,jdbcType=INTEGER},
+      </if>
+    </set>
+    <where>
+      1=1
+      <if test="id != null and id != ''">
+        AND id=#{id}
+      </if>
+      <if test="openid != nul and openid != '' ">
+        AND openid=#{openid}
+      </if>
+    </where>
+  </update>
+
+
+
   <update id="updateByPrimaryKey" parameterType="com.thinkgem.jeesite.modules.qyb.entity.WUser">
     update w_user
     set company_id = #{companyId,jdbcType=VARCHAR},
