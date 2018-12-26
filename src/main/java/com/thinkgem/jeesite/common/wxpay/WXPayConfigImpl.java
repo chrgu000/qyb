@@ -1,46 +1,93 @@
 package com.thinkgem.jeesite.common.wxpay;
 
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.InputStream;
 
+/**
+ * 微信支付配置接口实现类
+ *
+ * @author yclimb
+ * @date 2018/8/17
+ */
 public class WXPayConfigImpl extends WXPayConfig {
 
-  private String appid;
-  private String mch_id;
-  private String key;
+    private byte[] certData;
+    private static WXPayConfigImpl INSTANCE;
 
+    private WXPayConfigImpl() throws Exception {
+/*        String certPath = WXPayConstants.APICLIENT_CERT;
+        File file = new File(certPath);
+        InputStream certStream = new FileInputStream(file);
+        this.certData = new byte[(int) file.length()];
+        certStream.read(this.certData);
+        certStream.close();*/
+    }
 
-  public WXPayConfigImpl() {
+    public static WXPayConfigImpl getInstance() throws Exception {
+        if (INSTANCE == null) {
+            synchronized (WXPayConfigImpl.class) {
+                if (INSTANCE == null) {
+                    INSTANCE = new WXPayConfigImpl();
+                }
+            }
+        }
+        return INSTANCE;
+    }
 
-  }
+    @Override
+    public String getAppID() {
+        return WXPayConstants.APP_ID;
+    }
 
-  public WXPayConfigImpl(String appid, String mch_id,String key) {
-    this.appid = appid;
-    this.mch_id = mch_id;
-    this.key=key;
-  }
+    @Override
+    public String getMchID() {
+        return WXPayConstants.MCH_ID;
+    }
 
-  @Override
-  public String getAppID() {
-    return appid;
-  }
+    @Override
+    public String getKey() {
+        return WXPayConstants.API_KEY;
+    }
 
-  @Override
-  public String getMchID() {
-    return mch_id;
-  }
+    @Override
+    public InputStream getCertStream() {
+        ByteArrayInputStream certBis;
+        certBis = new ByteArrayInputStream(this.certData);
+        return certBis;
+    }
 
-  @Override
-  public  String getKey() {
-    return key;
-  }
+    @Override
+    public int getHttpConnectTimeoutMs() {
+        return 2000;
+    }
 
-  @Override
-  public InputStream getCertStream() {
-    return null;
-  }
+    @Override
+    public int getHttpReadTimeoutMs() {
+        return 10000;
+    }
 
-  @Override
-  public  IWXPayDomain getWXPayDomain() {
-    return null;
-  }
+    @Override
+    IWXPayDomain getWXPayDomain() {
+        return WXPayDomainSimpleImpl.instance();
+    }
+
+    public String getPrimaryDomain() {
+        return "api.mch.weixin.qq.com";
+    }
+
+    public String getAlternateDomain() {
+        return "api2.mch.weixin.qq.com";
+    }
+
+    @Override
+    public int getReportWorkerNum() {
+        return 1;
+    }
+
+    @Override
+    public int getReportBatchSize() {
+        return 2;
+    }
 }

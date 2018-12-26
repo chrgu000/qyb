@@ -33,7 +33,7 @@
     </li>
 </ul>
 <br/>
-<form:form id="inputForm" modelAttribute="wUser" action="${ctx}/qyb/wUser/updateLevel" method="post" class="form-horizontal">
+<form:form id="inputForm" modelAttribute="user" action="${ctx}/qyb/wUser/updateLevel" method="post" class="form-horizontal">
     <form:hidden path="id"/>
     <sys:message content="${message}"/>
 
