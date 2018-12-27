@@ -84,6 +84,15 @@ public class WUser extends DataEntity<WUser> {
 
     private Integer companion;
 
+    private String wechatAccount;
+
+    public String getWechatAccount() {
+        return wechatAccount;
+    }
+
+    public void setWechatAccount(String wechatAccount) {
+        this.wechatAccount = wechatAccount;
+    }
 
     public Integer getCompanion() {
         return companion;

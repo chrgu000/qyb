@@ -39,6 +39,7 @@
     u.name,
     u.position,
     u.companion,
+    u.wechat_account AS "wechatAccount",
     u.vip_level AS "vipLevel",
     u.mobile,
     u.company_id AS "company.id",
@@ -67,26 +68,33 @@
     from w_user
     where id = #{id,jdbcType=VARCHAR}
   </delete>
-  <insert id="insert" parameterType="com.thinkgem.jeesite.modules.qyb.entity.WUser">
-    insert into w_user (id, openid,company_id, vip_level, `name`, mobile, sex, avatar, country, province, city, area)
-    values (#{id,jdbcType=VARCHAR},
-            #{openid,jdbcType=VARCHAR},
-            #{companyId,jdbcType=VARCHAR},
-            #{vipLevel,jdbcType=BIT},
-            #{name,jdbcType=VARCHAR},
-            #{mobile,jdbcType=VARCHAR},
-            #{sex,jdbcType=BIT},
-            #{avatar,jdbcType=VARCHAR},
-            #{country,jdbcType=VARCHAR},
-            #{province,jdbcType=VARCHAR},
-            #{city,jdbcType=VARCHAR},
-            #{area,jdbcType=VARCHAR})
+  <insert id="insertXX" parameterType="com.thinkgem.jeesite.modules.qyb.entity.WUser">
+    insert into w_user (id, openid, wechat_account,
+      company_id, vip_level, adv_count,
+      ph_count, companion, balance,
+      `name`, `position`, mobile,
+      sex, avatar, country, province,
+      city, area, create_date,
+      del_flag)
+    values (#{id,jdbcType=VARCHAR}, #{openid,jdbcType=VARCHAR}, #{wechatAccount,jdbcType=VARCHAR},
+      #{companyId,jdbcType=VARCHAR}, #{vipLevel,jdbcType=BIT}, #{advCount,jdbcType=INTEGER},
+      #{phCount,jdbcType=INTEGER}, #{companion,jdbcType=INTEGER}, #{balance,jdbcType=DECIMAL},
+      #{name,jdbcType=VARCHAR}, #{position,jdbcType=VARCHAR}, #{mobile,jdbcType=VARCHAR},
+      #{sex,jdbcType=BIT}, #{avatar,jdbcType=VARCHAR}, #{country,jdbcType=VARCHAR}, #{province,jdbcType=VARCHAR},
+      #{city,jdbcType=VARCHAR}, #{area,jdbcType=VARCHAR}, #{createDate,jdbcType=TIMESTAMP},
+      #{delFlag,jdbcType=CHAR})
   </insert>
-  <insert id="insertSelective" parameterType="com.thinkgem.jeesite.modules.qyb.entity.WUser">
+  <insert id="insert" parameterType="com.thinkgem.jeesite.modules.qyb.entity.WUser">
     insert into w_user
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,
+      </if>
+      <if test="openid != null">
+        openid,
+      </if>
+      <if test="wechatAccount != null">
+        wechat_account,
       </if>
       <if test="companyId != null">
         company_id,
@@ -94,8 +102,23 @@
       <if test="vipLevel != null">
         vip_level,
       </if>
+      <if test="advCount != null">
+        adv_count,
+      </if>
+      <if test="phCount != null">
+        ph_count,
+      </if>
+      <if test="companion != null">
+        companion,
+      </if>
+      <if test="balance != null">
+        balance,
+      </if>
       <if test="name != null">
         `name`,
+      </if>
+      <if test="position != null">
+        `position`,
       </if>
       <if test="mobile != null">
         mobile,
@@ -118,10 +141,22 @@
       <if test="area != null">
         area,
       </if>
+      <if test="createDate != null">
+        create_date,
+      </if>
+      <if test="delFlag != null">
+        del_flag,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
         #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="openid != null">
+        #{openid,jdbcType=VARCHAR},
+      </if>
+      <if test="wechatAccount != null">
+        #{wechatAccount,jdbcType=VARCHAR},
       </if>
       <if test="companyId != null">
         #{companyId,jdbcType=VARCHAR},
@@ -129,8 +164,23 @@
       <if test="vipLevel != null">
         #{vipLevel,jdbcType=BIT},
       </if>
+      <if test="advCount != null">
+        #{advCount,jdbcType=INTEGER},
+      </if>
+      <if test="phCount != null">
+        #{phCount,jdbcType=INTEGER},
+      </if>
+      <if test="companion != null">
+        #{companion,jdbcType=INTEGER},
+      </if>
+      <if test="balance != null">
+        #{balance,jdbcType=DECIMAL},
+      </if>
       <if test="name != null">
         #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="position != null">
+        #{position,jdbcType=VARCHAR},
       </if>
       <if test="mobile != null">
         #{mobile,jdbcType=VARCHAR},
@@ -153,11 +203,20 @@
       <if test="area != null">
         #{area,jdbcType=VARCHAR},
       </if>
+      <if test="createDate != null">
+        #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="delFlag != null">
+        #{delFlag,jdbcType=CHAR},
+      </if>
     </trim>
   </insert>
   <update id="update" parameterType="com.thinkgem.jeesite.modules.qyb.entity.WUser">
     update w_user
     <set>
+      <if test="wechatAccount != null and wechatAccount != ''">
+        wechat_account=#{wechatAccount,jdbcType=VARCHAR},
+      </if>
       <if test="companyId != null">
         company_id = #{companyId,jdbcType=VARCHAR},
       </if>
@@ -177,10 +236,10 @@
         balance = #{balance,jdbcType=DECIMAL},
       </if>
       <if test="name != null">
-        `name` = #{name,jdbcType=VARCHAR},
+        <![CDATA[name = #{name,jdbcType=VARCHAR},]]>
       </if>
       <if test="position != null">
-        `position` = #{position,jdbcType=VARCHAR},
+        <![CDATA[position = #{position,jdbcType=VARCHAR},]]>
       </if>
       <if test="mobile != null">
         mobile = #{mobile,jdbcType=VARCHAR},
@@ -215,12 +274,11 @@
       <if test="id != null and id != ''">
         AND id=#{id}
       </if>
-      <if test="openid != nul and openid != '' ">
+      <if test="openid != null and openid != '' ">
         AND openid=#{openid}
       </if>
     </where>
   </update>
-
 
 
   <update id="updateByOpenid" parameterType="com.thinkgem.jeesite.modules.qyb.entity.WUser">
@@ -241,12 +299,11 @@
       <if test="id != null and id != ''">
         AND id=#{id}
       </if>
-      <if test="openid != nul and openid != '' ">
+      <if test="openid != null and openid != '' ">
         AND openid=#{openid}
       </if>
     </where>
   </update>
-
 
 
   <update id="updateByPrimaryKey" parameterType="com.thinkgem.jeesite.modules.qyb.entity.WUser">

@@ -256,4 +256,11 @@ public class QybController extends BaseController {
     return "fail";
   }
 
+
+  @RequestMapping(value = "user/save")
+  public String userSave(WUser user,HttpServletResponse response){
+     userService.save(user );
+     return renderString(response,BaseResponse.success("保存成功"));
+  }
+
 }
