@@ -39,4 +39,15 @@ public class WUserService extends CrudService<UserDAO, WUser> {
     return dao.updateByOpenid(user);
   }
 
+
+  public String getUserId(String openid){
+    return dao.getUserId(openid);
+  }
+
+
+  @Transactional(readOnly = false)
+  public int updateBaAdd(WUser user){
+    return dao.updateBaAdd(user);
+  }
+
 }

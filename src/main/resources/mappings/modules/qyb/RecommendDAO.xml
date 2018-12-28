@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.qyb.dao.RecommendDAO">
+  <resultMap id="BaseResultMap" type="com.thinkgem.jeesite.modules.qyb.entity.Recommend">
+    <id column="id" jdbcType="VARCHAR" property="id"/>
+    <result column="referrer_user_id" jdbcType="VARCHAR" property="referrerUserId"/>
+    <result column="applicant_user_id" jdbcType="VARCHAR" property="applicantUserId"/>
+    <result column="recommend_type" jdbcType="CHAR" property="recommendType"/>
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate"/>
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, referrer_user_id, applicant_user_id, recommend_type, create_date
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from w_recommend
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from w_recommend
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.thinkgem.jeesite.modules.qyb.entity.Recommend">
+    insert into w_recommend (id, referrer_user_id, applicant_user_id, 
+      recommend_type, create_date)
+    values (#{id,jdbcType=VARCHAR}, #{referrerUserId,jdbcType=VARCHAR}, #{applicantUserId,jdbcType=VARCHAR}, 
+      #{recommendType,jdbcType=CHAR}, #{createDate,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.thinkgem.jeesite.modules.qyb.entity.Recommend">
+    insert into w_recommend
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="referrerUserId != null">
+        referrer_user_id,
+      </if>
+      <if test="applicantUserId != null">
+        applicant_user_id,
+      </if>
+      <if test="recommendType != null">
+        recommend_type,
+      </if>
+      <if test="createDate != null">
+        create_date,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="referrerUserId != null">
+        #{referrerUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="applicantUserId != null">
+        #{applicantUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="recommendType != null">
+        #{recommendType,jdbcType=CHAR},
+      </if>
+      <if test="createDate != null">
+        #{createDate,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.thinkgem.jeesite.modules.qyb.entity.Recommend">
+    update w_recommend
+    <set>
+      <if test="referrerUserId != null">
+        referrer_user_id = #{referrerUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="applicantUserId != null">
+        applicant_user_id = #{applicantUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="recommendType != null">
+        recommend_type = #{recommendType,jdbcType=CHAR},
+      </if>
+      <if test="createDate != null">
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.thinkgem.jeesite.modules.qyb.entity.Recommend">
+    update w_recommend
+    set referrer_user_id = #{referrerUserId,jdbcType=VARCHAR},
+      applicant_user_id = #{applicantUserId,jdbcType=VARCHAR},
+      recommend_type = #{recommendType,jdbcType=CHAR},
+      create_date = #{createDate,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+
+
+  <select id="getByAp" resultType="com.thinkgem.jeesite.modules.qyb.entity.Recommend">
+    SELECT  referrer_user_id AS "referrerUserId"
+    FROM w_recommend
+    WHERE applicant_user_id=#{refId}
+    AND recommend_type='1'
+  </select>
+
+  <select id="getByApAll" resultType="com.thinkgem.jeesite.modules.qyb.entity.Recommend">
+    SELECT  referrer_user_id AS "referrerUserId",
+    recommend_type AS "recommendType"
+    FROM w_recommend
+    WHERE applicant_user_id=#{refId}
+  </select>
+</mapper>

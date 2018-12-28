@@ -57,7 +57,7 @@ public class WXPayConstants {
 
 
     public static String APP_ID = "wxa2df920f1bbc2e1d"; // 真实
-    public static String SECRET = "xxx"; // 真实
+    public static String SECRET = "9217ff71cb332917ccf0ba2ffc7f675c"; // 真实
     public static final String MCH_ID = "1521746531"; // 真实
     public static final String API_KEY = "XcxmT58Kdp5jOEUCLLNK6pj07RcPqXXK"; // 真实
     public static String APICLIENT_CERT = "/data/ops/cert/apiclient_cert.p12"; // 真实

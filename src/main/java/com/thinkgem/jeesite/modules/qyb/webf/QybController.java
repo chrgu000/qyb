@@ -1,11 +1,12 @@
 package com.thinkgem.jeesite.modules.qyb.webf;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.thinkgem.jeesite.common.fastweixin.api.SessionApi;
-import com.thinkgem.jeesite.common.fastweixin.api.config.ApiConfig;
 import com.thinkgem.jeesite.common.fastweixin.api.response.SnsTokenResponse;
 import com.thinkgem.jeesite.common.persistence.Page;
 import com.thinkgem.jeesite.common.utils.BaseResponse;
+import com.thinkgem.jeesite.common.utils.SpringContextHolder;
 import com.thinkgem.jeesite.common.utils.StringUtils;
 import com.thinkgem.jeesite.common.utils.XmlMapHandle;
 import com.thinkgem.jeesite.common.web.BaseController;
@@ -14,10 +15,7 @@ import com.thinkgem.jeesite.common.wxpay.WXPayConfigImpl;
 import com.thinkgem.jeesite.common.wxpay.WXPayConstants;
 import com.thinkgem.jeesite.common.wxpay.WXPayUtil;
 import com.thinkgem.jeesite.modules.qyb.entity.*;
-import com.thinkgem.jeesite.modules.qyb.service.CompanyService;
-import com.thinkgem.jeesite.modules.qyb.service.CooperationService;
-import com.thinkgem.jeesite.modules.qyb.service.WCommentService;
-import com.thinkgem.jeesite.modules.qyb.service.WUserService;
+import com.thinkgem.jeesite.modules.qyb.service.*;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.springframework.stereotype.Controller;
@@ -28,8 +26,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
+import java.io.*;
+import java.math.BigDecimal;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -43,10 +43,10 @@ public class QybController extends BaseController {
   private CompanyService companyService;
   @Resource
   private CooperationService cooperationService;
-
+  @Resource
+  private RecommendService recommendService;
   @Resource
   private WUserService userService;
-
   @Resource
   private WCommentService wCommentService;
 
@@ -109,6 +109,53 @@ public class QybController extends BaseController {
     return renderString(response, BaseResponse.success(list));
   }
 
+  @RequestMapping(value = "wx/getCode")
+  public void getCode(WUser user, HttpServletResponse response) {
+    try {
+      URL url = new URL("https://api.weixin.qq.com/wxa/getwxacodeunlimit?access_token=" + SpringContextHolder.apiConfig.getAccessToken());
+      HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+      httpURLConnection.setRequestMethod("POST");// 提交模式
+      // conn.setConnectTimeout(10000);//连接超时 单位毫秒
+      // conn.setReadTimeout(2000);//读取超时 单位毫秒
+      // 发送POST请求必须设置如下两行
+      httpURLConnection.setDoOutput(true);
+      httpURLConnection.setDoInput(true);
+      // 获取URLConnection对象对应的输出流
+      PrintWriter printWriter = new PrintWriter(httpURLConnection.getOutputStream());
+      // 发送请求参数
+      JSONObject paramJson = new JSONObject();
+      paramJson.put("scene", user.getId());
+      paramJson.put("page", "pages/authorize");
+      paramJson.put("width", 430);
+      paramJson.put("auto_color", true);
+      /**
+       * line_color生效
+       * paramJson.put("auto_color", false);
+       * JSONObject lineColor = new JSONObject();
+       * lineColor.put("r", 0);
+       * lineColor.put("g", 0);
+       * lineColor.put("b", 0);
+       * paramJson.put("line_color", lineColor);
+       * */
+      //response.get
+      printWriter.write(paramJson.toString());
+      // flush输出流的缓冲
+      printWriter.flush();
+      //开始获取数据
+      BufferedInputStream bis = new BufferedInputStream(httpURLConnection.getInputStream());
+      OutputStream os = response.getOutputStream();
+      int len;
+      byte[] arr = new byte[1024];
+      while ((len = bis.read(arr)) != -1) {
+        os.write(arr, 0, len);
+        os.flush();
+      }
+      os.close();
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+  }
+
   @RequestMapping(value = {"comment/list"})
   public String getComment(String copId, HttpServletResponse response) {
     List<WComment> list = wCommentService.getByCopId(copId);
@@ -117,8 +164,7 @@ public class QybController extends BaseController {
 
   @RequestMapping(value = {"wechat/jscode2session"})
   public String getOpenid(HttpServletResponse response, String jsCode) {
-    SessionApi sessionApi = new SessionApi(new ApiConfig("", ""));
-    //code = "071fUVQd1kfk7z0fR7Nd19MdRd1fUVQt";
+    SessionApi sessionApi = new SessionApi();
     SnsTokenResponse re = sessionApi.executeSGet("sns/jscode2session?appid=wxa2df920f1bbc2e1d&secret=9217ff71cb332917ccf0ba2ffc7f675c&js_code=#&grant_type=authorization_code", jsCode);
     return renderString(response, BaseResponse.success(re));
   }
@@ -159,8 +205,6 @@ public class QybController extends BaseController {
     reqData.put("sign", WXPayUtil.generateSignature(reqData, config.getKey(), WXPayConstants.SignType.MD5));
 
 
-
-
     Map<String, String> resultMap = wxPay.unifiedOrder(reqData);
 
     Map<String, String> payMap = new HashMap<>();
@@ -172,6 +216,19 @@ public class QybController extends BaseController {
     payMap.put("paySign", WXPayUtil.generateSignature(payMap, config.getKey(), WXPayConstants.SignType.MD5));
 
     return renderString(response, BaseResponse.success(payMap));
+  }
+
+  @RequestMapping(value = "recommend")
+  public String recommend(String referrerUserId, String applicantUserId, HttpServletResponse response) {
+
+    recommendService.save(new Recommend(referrerUserId, applicantUserId, "1"));
+
+    //找到直推人
+    Recommend recommend = recommendService.getByAp(referrerUserId);
+    if (recommend != null) {
+      recommendService.save(new Recommend(recommend.getReferrerUserId(), applicantUserId, "2"));
+    }
+    return renderString(response, BaseResponse.success("success"));
   }
 
   @RequestMapping(value = "register")
@@ -191,6 +248,12 @@ public class QybController extends BaseController {
     cooperationService.updateViews(id);
     return renderString(response, BaseResponse.success("success"));
 
+  }
+
+  @RequestMapping(value = "user/save")
+  public String userSave(WUser user, HttpServletResponse response) {
+    userService.save(user);
+    return renderString(response, BaseResponse.success("保存成功"));
   }
 
   @RequestMapping(value = "/wx/notify")
@@ -216,17 +279,17 @@ public class QybController extends BaseController {
         //后续具体自己实
 
         String resultCode = (String) resultMap.get("result_code");
-        String openid=(String) resultMap.get("openid");
+        String openid = (String) resultMap.get("openid");
 
-        WUser user=new WUser();
-        user.setOpenid(openid);
+        String userId = userService.getUserId(openid);
+
+        WUser user = new WUser(openid);
 
         if (resultCode.equals("SUCCESS")) {
           Integer totalFee = (Integer) resultMap.get("total_fee") / 100;
           if (totalFee == 99) {
             //推广经理
             user.setVipLevel(2);
-
           } else if (totalFee == 500) {
             //VIP
             user.setVipLevel(3);
@@ -244,6 +307,63 @@ public class QybController extends BaseController {
             user.setAdvCount(0);
           }
           userService.updateByOpenid(user);
+
+
+          //加推广金钱
+          List<Recommend> recommends = recommendService.getByApAll(userId);
+
+          BigDecimal bigDecimal=null;
+          BigDecimal bigDecimalt1=   new BigDecimal("0.35");
+
+          BigDecimal bigDecimalt2=   new BigDecimal("0.15");
+          for (Recommend recommend : recommends) {
+            if (totalFee == 99) {
+              //推广经理
+              BigDecimal bigDecimaj=new BigDecimal("99");
+              if(recommend.getRecommendType().equals("1")){
+                bigDecimal=bigDecimaj.multiply(bigDecimalt1);
+
+              }else if (recommend.getRecommendType().equals("2")){
+                bigDecimal=bigDecimaj.multiply(bigDecimalt2);
+              }
+            } else if (totalFee == 500) {
+              //VIP
+              BigDecimal bigDecimaV=new BigDecimal("500");
+              if(recommend.getRecommendType().equals("1")){
+                bigDecimal=bigDecimaV.multiply(bigDecimalt1);
+
+              }else if (recommend.getRecommendType().equals("2")){
+                bigDecimal=bigDecimaV.multiply(bigDecimalt2);
+
+              }
+            } else if (totalFee == 1000) {
+              //SVIP
+              BigDecimal bigDecimaSV=new BigDecimal("1000");
+              if(recommend.getRecommendType().equals("1")){
+                bigDecimal=bigDecimaSV.multiply(bigDecimalt1);
+
+              }else if (recommend.getRecommendType().equals("2")){
+                bigDecimal=bigDecimaSV.multiply(bigDecimalt2);
+
+              }
+            } else if (totalFee == 1800) {
+              //SSVIP
+              BigDecimal bigDecimaSSV=new BigDecimal("1800");
+              if(recommend.getRecommendType().equals("1")){
+                bigDecimal=bigDecimaSSV.multiply(bigDecimalt1);
+
+              }else if (recommend.getRecommendType().equals("2")){
+                bigDecimal=bigDecimaSSV.multiply(bigDecimalt2);
+
+              }
+            }
+            //更新推广人数和金额
+            WUser entity=new WUser();
+            entity.setId(userId);
+            entity.setBalance(bigDecimal);
+            userService.updateBaAdd(entity);
+          }
+
         }
         logger.error(JSON.toJSONString(resultMap));
       }
@@ -256,11 +376,5 @@ public class QybController extends BaseController {
     return "fail";
   }
 
-
-  @RequestMapping(value = "user/save")
-  public String userSave(WUser user,HttpServletResponse response){
-     userService.save(user );
-     return renderString(response,BaseResponse.success("保存成功"));
-  }
 
 }

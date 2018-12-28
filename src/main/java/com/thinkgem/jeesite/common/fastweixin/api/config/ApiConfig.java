@@ -65,8 +65,8 @@ public final class ApiConfig extends Observable implements Serializable {
         this.appid = appid;
         this.secret = secret;
         this.enableJsApi = enableJsApi;
-        //long now = System.currentTimeMillis();
-       // initToken(now);
+        long now = System.currentTimeMillis();
+        initToken(now);
         //if (enableJsApi) initJSToken(now);
     }
 

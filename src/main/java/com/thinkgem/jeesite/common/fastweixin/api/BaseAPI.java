@@ -21,7 +21,7 @@ public abstract class BaseAPI {
 
     protected static final String BASE_API_URL = "https://api.weixin.qq.com/";
 
-    protected final ApiConfig config;
+    protected  ApiConfig config;
 
     /**
      * 构造方法，设置apiConfig
@@ -32,7 +32,9 @@ public abstract class BaseAPI {
         this.config = config;
     }
 
+    protected BaseAPI() {
 
+    }
     /**
      * 通用post请求
      *

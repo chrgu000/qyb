@@ -6,290 +6,280 @@ import java.math.BigDecimal;
 
 /**
  * w_user
- * @author 
+ *
+ * @author
  */
 public class WUser extends DataEntity<WUser> {
 
-    /**
-     * 所属公司
-     */
-    private String companyId;
 
-    /**
-     * 1.普通用户2.推广经理3.vip4.svip5.ssvip
-     */
-    private Integer vipLevel;
+  private static final long serialVersionUID = 1L;
+  /**
+   * 可发广告数量
+   */
+  private Integer advCount;
+  /**
+   * 区县
+   */
+  private String area;
+  /**
+   * 头像
+   */
+  private String avatar;
+  /**
+   * 剩余现金
+   */
+  private BigDecimal balance;
+  /**
+   * 城市
+   */
+  private String city;
+  private Integer companion;
+  private Company company;
+  /**
+   * 所属公司
+   */
+  private String companyId;
+  /**
+   * 国家
+   */
+  private String country;
+  /**
+   * 手机号码
+   */
+  private String mobile;
+  /**
+   * 姓名
+   */
+  private String name;
+  private String openid;
+  /**
+   * 查看电话数量
+   */
+  private Integer phCount;
+  private String position;
+  /**
+   * 省份
+   */
+  private String province;
+  /**
+   * 性别
+   */
+  private Integer sex;
+  /**
+   * 1.普通用户2.推广经理3.vip4.svip5.ssvip
+   */
+  private Integer vipLevel;
+  private String wechatAccount;
 
-    /**
-     * 姓名
-     */
-    private String name;
+  public WUser() {
+  }
 
-    /**
-     * 手机号码
-     */
-    private String mobile;
+  public WUser(String openid) {
+    this.openid = openid;
+  }
 
-    /**
-     * 性别
-     */
-    private Integer sex;
-
-    /**
-     * 头像
-     */
-    private String avatar;
-
-    /**
-     * 国家
-     */
-    private String country;
-
-    /**
-     * 省份
-     */
-    private String province;
-
-    /**
-     * 城市
-     */
-    private String city;
-
-    /**
-     * 区县
-     */
-    private String area;
-
-    private String position;
-
-    private Company company;
-
-    private String openid;
-
-    /**
-     * 可发广告数量
-     */
-    private Integer advCount;
-
-    /**
-     * 查看电话数量
-     */
-    private Integer phCount;
-
-    /**
-     * 剩余现金
-     */
-    private BigDecimal balance;
-
-
-    private Integer companion;
-
-    private String wechatAccount;
-
-    public String getWechatAccount() {
-        return wechatAccount;
+  @Override
+  public boolean equals(Object that) {
+    if (this == that) {
+      return true;
     }
-
-    public void setWechatAccount(String wechatAccount) {
-        this.wechatAccount = wechatAccount;
+    if (that == null) {
+      return false;
     }
-
-    public Integer getCompanion() {
-        return companion;
+    if (getClass() != that.getClass()) {
+      return false;
     }
+    WUser other = (WUser) that;
+    return (this.getId() == null ? other.getId() == null : this.getId().equals(other.getId()))
+        && (this.getCompanyId() == null ? other.getCompanyId() == null : this.getCompanyId().equals(other.getCompanyId()))
+        && (this.getName() == null ? other.getName() == null : this.getName().equals(other.getName()))
+        && (this.getMobile() == null ? other.getMobile() == null : this.getMobile().equals(other.getMobile()))
+        && (this.getAvatar() == null ? other.getAvatar() == null : this.getAvatar().equals(other.getAvatar()))
+        && (this.getCountry() == null ? other.getCountry() == null : this.getCountry().equals(other.getCountry()))
+        && (this.getProvince() == null ? other.getProvince() == null : this.getProvince().equals(other.getProvince()))
+        && (this.getCity() == null ? other.getCity() == null : this.getCity().equals(other.getCity()))
+        && (this.getArea() == null ? other.getArea() == null : this.getArea().equals(other.getArea()));
+  }
 
-    public void setCompanion(Integer companion) {
-        this.companion = companion;
-    }
+  public String getCompanyId() {
+    return companyId;
+  }
 
-    public Integer getAdvCount() {
-        return advCount;
-    }
+  public void setCompanyId(String companyId) {
+    this.companyId = companyId;
+  }
 
-    public void setAdvCount(Integer advCount) {
-        this.advCount = advCount;
-    }
+  public String getName() {
+    return name;
+  }
 
-    public Integer getPhCount() {
-        return phCount;
-    }
+  public void setName(String name) {
+    this.name = name;
+  }
 
-    public void setPhCount(Integer phCount) {
-        this.phCount = phCount;
-    }
+  public String getMobile() {
+    return mobile;
+  }
 
-    public BigDecimal getBalance() {
-        return balance;
-    }
+  public void setMobile(String mobile) {
+    this.mobile = mobile;
+  }
 
-    public void setBalance(BigDecimal balance) {
-        this.balance = balance;
-    }
+  public String getAvatar() {
+    return avatar;
+  }
 
-    public String getOpenid() {
-        return openid;
-    }
+  public void setAvatar(String avatar) {
+    this.avatar = avatar;
+  }
 
-    public void setOpenid(String openid) {
-        this.openid = openid;
-    }
+  public String getCountry() {
+    return country;
+  }
 
-    public Company getCompany() {
-        return company;
-    }
+  public void setCountry(String country) {
+    this.country = country;
+  }
 
-    public void setCompany(Company company) {
-        this.company = company;
-    }
+  public String getProvince() {
+    return province;
+  }
 
-    public String getPosition() {
-        return position;
-    }
+  public void setProvince(String province) {
+    this.province = province;
+  }
 
-    public void setPosition(String position) {
-        this.position = position;
-    }
+  public String getCity() {
+    return city;
+  }
 
-    private static final long serialVersionUID = 1L;
+  public void setCity(String city) {
+    this.city = city;
+  }
 
-    public String getCompanyId() {
-        return companyId;
-    }
+  public String getArea() {
+    return area;
+  }
 
-    public void setCompanyId(String companyId) {
-        this.companyId = companyId;
-    }
+  public void setArea(String area) {
+    this.area = area;
+  }
 
-    public Integer getVipLevel() {
-        return vipLevel;
-    }
+  @Override
+  public String toString() {
+    StringBuilder sb = new StringBuilder();
+    sb.append(getClass().getSimpleName());
+    sb.append(" [");
+    sb.append("Hash = ").append(hashCode());
+    sb.append(", id=").append(id);
+    sb.append(", companyId=").append(companyId);
+    sb.append(", vipLevel=").append(vipLevel);
+    sb.append(", name=").append(name);
+    sb.append(", mobile=").append(mobile);
+    sb.append(", sex=").append(sex);
+    sb.append(", avatar=").append(avatar);
+    sb.append(", country=").append(country);
+    sb.append(", province=").append(province);
+    sb.append(", city=").append(city);
+    sb.append(", area=").append(area);
+    sb.append(", serialVersionUID=").append(serialVersionUID);
+    sb.append("]");
+    return sb.toString();
+  }
 
-    public void setVipLevel(Integer vipLevel) {
-        this.vipLevel = vipLevel;
-    }
+  @Override
+  public int hashCode() {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + ((getId() == null) ? 0 : getId().hashCode());
+    result = prime * result + ((getCompanyId() == null) ? 0 : getCompanyId().hashCode());
+    result = prime * result + ((getName() == null) ? 0 : getName().hashCode());
+    result = prime * result + ((getMobile() == null) ? 0 : getMobile().hashCode());
+    result = prime * result + ((getAvatar() == null) ? 0 : getAvatar().hashCode());
+    result = prime * result + ((getCountry() == null) ? 0 : getCountry().hashCode());
+    result = prime * result + ((getProvince() == null) ? 0 : getProvince().hashCode());
+    result = prime * result + ((getCity() == null) ? 0 : getCity().hashCode());
+    result = prime * result + ((getArea() == null) ? 0 : getArea().hashCode());
+    return result;
+  }
 
-    public String getName() {
-        return name;
-    }
+  public Integer getAdvCount() {
+    return advCount;
+  }
 
-    public void setName(String name) {
-        this.name = name;
-    }
+  public void setAdvCount(Integer advCount) {
+    this.advCount = advCount;
+  }
 
-    public String getMobile() {
-        return mobile;
-    }
+  public BigDecimal getBalance() {
+    return balance;
+  }
 
-    public void setMobile(String mobile) {
-        this.mobile = mobile;
-    }
+  public void setBalance(BigDecimal balance) {
+    this.balance = balance;
+  }
 
-    public Integer getSex() {
-        return sex;
-    }
+  public Integer getCompanion() {
+    return companion;
+  }
 
-    public void setSex(Integer sex) {
-        this.sex = sex;
-    }
+  public void setCompanion(Integer companion) {
+    this.companion = companion;
+  }
 
-    public String getAvatar() {
-        return avatar;
-    }
+  public Company getCompany() {
+    return company;
+  }
 
-    public void setAvatar(String avatar) {
-        this.avatar = avatar;
-    }
+  public void setCompany(Company company) {
+    this.company = company;
+  }
 
-    public String getCountry() {
-        return country;
-    }
+  public String getOpenid() {
+    return openid;
+  }
 
-    public void setCountry(String country) {
-        this.country = country;
-    }
+  public void setOpenid(String openid) {
+    this.openid = openid;
+  }
 
-    public String getProvince() {
-        return province;
-    }
+  public Integer getPhCount() {
+    return phCount;
+  }
 
-    public void setProvince(String province) {
-        this.province = province;
-    }
+  public void setPhCount(Integer phCount) {
+    this.phCount = phCount;
+  }
 
-    public String getCity() {
-        return city;
-    }
+  public String getPosition() {
+    return position;
+  }
 
-    public void setCity(String city) {
-        this.city = city;
-    }
+  public void setPosition(String position) {
+    this.position = position;
+  }
 
-    public String getArea() {
-        return area;
-    }
+  public Integer getSex() {
+    return sex;
+  }
 
-    public void setArea(String area) {
-        this.area = area;
-    }
+  public void setSex(Integer sex) {
+    this.sex = sex;
+  }
 
-    @Override
-    public boolean equals(Object that) {
-        if (this == that) {
-            return true;
-        }
-        if (that == null) {
-            return false;
-        }
-        if (getClass() != that.getClass()) {
-            return false;
-        }
-        WUser other = (WUser) that;
-        return (this.getId() == null ? other.getId() == null : this.getId().equals(other.getId()))
-            && (this.getCompanyId() == null ? other.getCompanyId() == null : this.getCompanyId().equals(other.getCompanyId()))
-            && (this.getName() == null ? other.getName() == null : this.getName().equals(other.getName()))
-            && (this.getMobile() == null ? other.getMobile() == null : this.getMobile().equals(other.getMobile()))
-            && (this.getAvatar() == null ? other.getAvatar() == null : this.getAvatar().equals(other.getAvatar()))
-            && (this.getCountry() == null ? other.getCountry() == null : this.getCountry().equals(other.getCountry()))
-            && (this.getProvince() == null ? other.getProvince() == null : this.getProvince().equals(other.getProvince()))
-            && (this.getCity() == null ? other.getCity() == null : this.getCity().equals(other.getCity()))
-            && (this.getArea() == null ? other.getArea() == null : this.getArea().equals(other.getArea()));
-    }
+  public Integer getVipLevel() {
+    return vipLevel;
+  }
 
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((getId() == null) ? 0 : getId().hashCode());
-        result = prime * result + ((getCompanyId() == null) ? 0 : getCompanyId().hashCode());
-        result = prime * result + ((getName() == null) ? 0 : getName().hashCode());
-        result = prime * result + ((getMobile() == null) ? 0 : getMobile().hashCode());
-        result = prime * result + ((getAvatar() == null) ? 0 : getAvatar().hashCode());
-        result = prime * result + ((getCountry() == null) ? 0 : getCountry().hashCode());
-        result = prime * result + ((getProvince() == null) ? 0 : getProvince().hashCode());
-        result = prime * result + ((getCity() == null) ? 0 : getCity().hashCode());
-        result = prime * result + ((getArea() == null) ? 0 : getArea().hashCode());
-        return result;
-    }
+  public void setVipLevel(Integer vipLevel) {
+    this.vipLevel = vipLevel;
+  }
 
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(getClass().getSimpleName());
-        sb.append(" [");
-        sb.append("Hash = ").append(hashCode());
-        sb.append(", id=").append(id);
-        sb.append(", companyId=").append(companyId);
-        sb.append(", vipLevel=").append(vipLevel);
-        sb.append(", name=").append(name);
-        sb.append(", mobile=").append(mobile);
-        sb.append(", sex=").append(sex);
-        sb.append(", avatar=").append(avatar);
-        sb.append(", country=").append(country);
-        sb.append(", province=").append(province);
-        sb.append(", city=").append(city);
-        sb.append(", area=").append(area);
-        sb.append(", serialVersionUID=").append(serialVersionUID);
-        sb.append("]");
-        return sb.toString();
-    }
+  public String getWechatAccount() {
+    return wechatAccount;
+  }
+
+  public void setWechatAccount(String wechatAccount) {
+    this.wechatAccount = wechatAccount;
+  }
 }

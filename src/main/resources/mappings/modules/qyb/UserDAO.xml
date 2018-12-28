@@ -63,6 +63,14 @@
   </select>
 
 
+  <select id="getUserId" resultType="java.lang.String">
+    SELECT
+    u.id
+    FROM w_user u
+    WHERE u.openid=#{openid}
+  </select>
+
+
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
     delete
     from w_user
@@ -372,6 +380,14 @@
     select adv_count FROM w_user
     WHERE id=#{id}
   </select>
+
+
+  <update id="updateBaAdd" parameterType="com.thinkgem.jeesite.modules.qyb.entity.WUser">
+    update w_user
+    set balance=balance+${balance}，
+    companion=companion+1
+    WHERE id=#{id}
+  </update>
 
 
 </mapper>

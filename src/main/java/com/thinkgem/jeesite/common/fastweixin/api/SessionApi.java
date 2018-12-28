@@ -8,11 +8,7 @@ import com.thinkgem.jeesite.common.fastweixin.util.JSONUtil;
 import com.thinkgem.jeesite.common.fastweixin.util.NetWorkCenter;
 
 public class SessionApi extends BaseAPI {
-
-  public SessionApi(ApiConfig config) {
-    super(config);
-  }
-
+  protected static final String BASE_API_URL = "https://api.weixin.qq.com/";
   /**
    * 通用get请求
    *
@@ -29,5 +25,7 @@ public class SessionApi extends BaseAPI {
     String resultJson = isSuccess(response.getErrcode()) ? response.getErrmsg() : response.toJsonString();
     return JSONUtil.toBean(resultJson, SnsTokenResponse.class);
   }
+
+
 
 }
