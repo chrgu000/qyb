@@ -32,6 +32,7 @@ public class WXPayUtil {
         int str4 = (int) (Math.random() * 9000) + 1000;
         return WXPayConstants.MCH_ID + yyyyMMddHHmmss + str4;
     }
+
     /**
      * XML格式字符串转换为Map
      *

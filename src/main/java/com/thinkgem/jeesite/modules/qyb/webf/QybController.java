@@ -256,124 +256,137 @@ public class QybController extends BaseController {
     return renderString(response, BaseResponse.success("保存成功"));
   }
 
-  @RequestMapping(value = "/wx/notify")
-  public String wxNotify(String id, HttpServletResponse response, HttpServletRequest request) {
-    try {
-      InputStream inStream = request.getInputStream();
-      int _buffer_size = 1024;
-      if (inStream != null) {
-        ByteArrayOutputStream outStream = new ByteArrayOutputStream();
-        byte[] tempBytes = new byte[_buffer_size];
-        int count = -1;
-        while ((count = inStream.read(tempBytes, 0, _buffer_size)) != -1) {
-          outStream.write(tempBytes, 0, count);
+  @RequestMapping(value = "wx/notify")
+  public void wxNotify(HttpServletResponse response, HttpServletRequest request) throws Exception {
+
+
+    PrintWriter writer = response.getWriter();
+    InputStream inStream = request.getInputStream();
+
+    int _buffer_size = 1024;
+    if (inStream != null) {
+      ByteArrayOutputStream outStream = new ByteArrayOutputStream();
+      byte[] tempBytes = new byte[_buffer_size];
+      int count = -1;
+      while ((count = inStream.read(tempBytes, 0, _buffer_size)) != -1) {
+        outStream.write(tempBytes, 0, count);
+      }
+      tempBytes = null;
+      outStream.flush();
+      //将流转换成字符串
+      String result = new String(outStream.toByteArray(), "UTF-8");
+      //将字符串解析成XML
+      Document doc = DocumentHelper.parseText(result);
+      //将XML格式转化成MAP格式数据
+      Map<String, Object> resultMap = XmlMapHandle.Dom2Map(doc);
+      //后续具体自己实
+      logger.error(JSON.toJSONString(resultMap));
+      String resultCode = (String) resultMap.get("result_code");
+      String openid = (String) resultMap.get("openid");
+
+      String userId = userService.getUserId(openid);
+
+      WUser user = new WUser(openid);
+
+      if (resultCode.equals("SUCCESS")) {
+        //Integer totalFee = (Integer) resultMap.get("total_fee") / 100;
+        String  totalFeeStr =(String)resultMap.get("total_fee")  ;
+        Integer totalFee=Integer.parseInt(totalFeeStr)/1;
+        if (totalFee == 1) {
+          totalFee = 99;
         }
-        tempBytes = null;
-        outStream.flush();
-        //将流转换成字符串
-        String result = new String(outStream.toByteArray(), "UTF-8");
-        //将字符串解析成XML
-        Document doc = DocumentHelper.parseText(result);
-        //将XML格式转化成MAP格式数据
-        Map<String, Object> resultMap = XmlMapHandle.Dom2Map(doc);
-        //后续具体自己实
+        if (totalFee == 2) {
+          totalFee = 500;
+        }
+        if (totalFee == 3) {
+          totalFee = 1000;
+        }
+        if (totalFee == 4) {
+          totalFee = 1800;
+        }
+        if (totalFee == 99) {
+          //推广经理
+          user.setVipLevel(2);
+        } else if (totalFee == 500) {
+          //VIP
+          user.setVipLevel(3);
+          user.setAdvCount(50);
+          user.setAdvCount(380);
+        } else if (totalFee == 1000) {
+          //SVIP
+          user.setVipLevel(4);
+          user.setAdvCount(200);
+          user.setAdvCount(1000);
+        } else if (totalFee == 1800) {
+          //SSVIP
+          user.setVipLevel(5);
+          user.setAdvCount(0);
+          user.setAdvCount(0);
+        }
+        userService.updateByOpenid(user);
 
-        String resultCode = (String) resultMap.get("result_code");
-        String openid = (String) resultMap.get("openid");
 
-        String userId = userService.getUserId(openid);
+        //加推广金钱
+        List<Recommend> recommends = recommendService.getByApAll(userId);
 
-        WUser user = new WUser(openid);
+        BigDecimal bigDecimal = null;
+        BigDecimal bigDecimalt1 = new BigDecimal("0.35");
 
-        if (resultCode.equals("SUCCESS")) {
-          Integer totalFee = (Integer) resultMap.get("total_fee") / 100;
+        BigDecimal bigDecimalt2 = new BigDecimal("0.15");
+        for (Recommend recommend : recommends) {
           if (totalFee == 99) {
             //推广经理
-            user.setVipLevel(2);
+            BigDecimal bigDecimaj = new BigDecimal("99");
+            if (recommend.getRecommendType().equals("1")) {
+              bigDecimal = bigDecimaj.multiply(bigDecimalt1);
+
+            } else if (recommend.getRecommendType().equals("2")) {
+              bigDecimal = bigDecimaj.multiply(bigDecimalt2);
+            }
           } else if (totalFee == 500) {
             //VIP
-            user.setVipLevel(3);
-            user.setAdvCount(50);
-            user.setAdvCount(380);
+            BigDecimal bigDecimaV = new BigDecimal("500");
+            if (recommend.getRecommendType().equals("1")) {
+              bigDecimal = bigDecimaV.multiply(bigDecimalt1);
+
+            } else if (recommend.getRecommendType().equals("2")) {
+              bigDecimal = bigDecimaV.multiply(bigDecimalt2);
+
+            }
           } else if (totalFee == 1000) {
             //SVIP
-            user.setVipLevel(4);
-            user.setAdvCount(200);
-            user.setAdvCount(1000);
+            BigDecimal bigDecimaSV = new BigDecimal("1000");
+            if (recommend.getRecommendType().equals("1")) {
+              bigDecimal = bigDecimaSV.multiply(bigDecimalt1);
+
+            } else if (recommend.getRecommendType().equals("2")) {
+              bigDecimal = bigDecimaSV.multiply(bigDecimalt2);
+
+            }
           } else if (totalFee == 1800) {
             //SSVIP
-            user.setVipLevel(5);
-            user.setAdvCount(0);
-            user.setAdvCount(0);
-          }
-          userService.updateByOpenid(user);
+            BigDecimal bigDecimaSSV = new BigDecimal("1800");
+            if (recommend.getRecommendType().equals("1")) {
+              bigDecimal = bigDecimaSSV.multiply(bigDecimalt1);
 
+            } else if (recommend.getRecommendType().equals("2")) {
+              bigDecimal = bigDecimaSSV.multiply(bigDecimalt2);
 
-          //加推广金钱
-          List<Recommend> recommends = recommendService.getByApAll(userId);
-
-          BigDecimal bigDecimal=null;
-          BigDecimal bigDecimalt1=   new BigDecimal("0.35");
-
-          BigDecimal bigDecimalt2=   new BigDecimal("0.15");
-          for (Recommend recommend : recommends) {
-            if (totalFee == 99) {
-              //推广经理
-              BigDecimal bigDecimaj=new BigDecimal("99");
-              if(recommend.getRecommendType().equals("1")){
-                bigDecimal=bigDecimaj.multiply(bigDecimalt1);
-
-              }else if (recommend.getRecommendType().equals("2")){
-                bigDecimal=bigDecimaj.multiply(bigDecimalt2);
-              }
-            } else if (totalFee == 500) {
-              //VIP
-              BigDecimal bigDecimaV=new BigDecimal("500");
-              if(recommend.getRecommendType().equals("1")){
-                bigDecimal=bigDecimaV.multiply(bigDecimalt1);
-
-              }else if (recommend.getRecommendType().equals("2")){
-                bigDecimal=bigDecimaV.multiply(bigDecimalt2);
-
-              }
-            } else if (totalFee == 1000) {
-              //SVIP
-              BigDecimal bigDecimaSV=new BigDecimal("1000");
-              if(recommend.getRecommendType().equals("1")){
-                bigDecimal=bigDecimaSV.multiply(bigDecimalt1);
-
-              }else if (recommend.getRecommendType().equals("2")){
-                bigDecimal=bigDecimaSV.multiply(bigDecimalt2);
-
-              }
-            } else if (totalFee == 1800) {
-              //SSVIP
-              BigDecimal bigDecimaSSV=new BigDecimal("1800");
-              if(recommend.getRecommendType().equals("1")){
-                bigDecimal=bigDecimaSSV.multiply(bigDecimalt1);
-
-              }else if (recommend.getRecommendType().equals("2")){
-                bigDecimal=bigDecimaSSV.multiply(bigDecimalt2);
-
-              }
             }
-            //更新推广人数和金额
-            WUser entity=new WUser();
-            entity.setId(userId);
-            entity.setBalance(bigDecimal);
-            userService.updateBaAdd(entity);
           }
-
+          //更新推广人数和金额
+          WUser entity = new WUser();
+          entity.setId(userId);
+          entity.setBalance(bigDecimal);
+          userService.updateBaAdd(entity);
         }
-        logger.error(JSON.toJSONString(resultMap));
       }
-      //通知微信支付系统接收到信息
-      return "<xml><return_code><![CDATA[SUCCESS]]></return_code> <return_msg><![CDATA[OK]]></return_msg> </xml>";
-    } catch (Exception e) {
-      System.out.println(e.getMessage());
+
     }
-    //如果失败返回错误，微信会再次发送支付信息
-    return "fail";
+    //通知微信支付系统接收到信息
+    String str = "<xml><return_code><![CDATA[SUCCESS]]></return_code> <return_msg><![CDATA[OK]]></return_msg> </xml>";
+    writer.write(str);
+    writer.flush();
   }
 
 
