@@ -218,16 +218,20 @@ public class QybController extends BaseController {
     return renderString(response, BaseResponse.success(payMap));
   }
 
-  @RequestMapping(value = "recommend")
-  public String recommend(String referrerUserId, String applicantUserId, HttpServletResponse response) {
+  @RequestMapping(value = "saveRecommend")
+  public String saveRecommend(String referrerUserId, String applicantUserId, HttpServletResponse response) {
 
-    recommendService.save(new Recommend(referrerUserId, applicantUserId, "1"));
+    if(StringUtils.isNoneBlank(referrerUserId)&&StringUtils.isNoneBlank(applicantUserId)){
 
-    //找到直推人
-    Recommend recommend = recommendService.getByAp(referrerUserId);
-    if (recommend != null) {
-      recommendService.save(new Recommend(recommend.getReferrerUserId(), applicantUserId, "2"));
+      recommendService.save(new Recommend(referrerUserId, applicantUserId, "1"));
+
+      //找到直推人
+      Recommend recommend = recommendService.getByAp(referrerUserId);
+      if (recommend != null) {
+        recommendService.save(new Recommend(recommend.getReferrerUserId(), applicantUserId, "2"));
+      }
     }
+
     return renderString(response, BaseResponse.success("success"));
   }
 
@@ -311,17 +315,17 @@ public class QybController extends BaseController {
           //VIP
           user.setVipLevel(3);
           user.setAdvCount(50);
-          user.setAdvCount(380);
+          user.setPhCount(380);
         } else if (totalFee == 1000) {
           //SVIP
           user.setVipLevel(4);
           user.setAdvCount(200);
-          user.setAdvCount(1000);
+          user.setPhCount(1000);
         } else if (totalFee == 1800) {
           //SSVIP
           user.setVipLevel(5);
           user.setAdvCount(0);
-          user.setAdvCount(0);
+          user.setPhCount(0);
         }
         userService.updateByOpenid(user);
 
