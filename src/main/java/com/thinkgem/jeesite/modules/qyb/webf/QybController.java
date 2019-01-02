@@ -380,7 +380,7 @@ public class QybController extends BaseController {
           }
           //更新推广人数和金额
           WUser entity = new WUser();
-          entity.setId(userId);
+          entity.setId(recommend.getReferrerUserId());
           entity.setBalance(bigDecimal);
           userService.updateBaAdd(entity);
         }

@@ -23,15 +23,15 @@ public class Test {
     String mch_id = "1521746531";
     String key="XcxmT58Kdp5jOEUCLLNK6pj07RcPqXXK";
 
-   // final WXPayConfigImpl config = new WXPayConfigImpl(appid, mch_id,key);
+   /* final WXPayConfigImpl config = new WXPayConfigImpl(appid, mch_id,key);
 
-   // WXPay wxPay = new WXPay(config);
-
-/*    ApiConfig apiConfig=new ApiConfig(WXPayConstants.APP_ID,WXPayConstants.SECRET);
+   /* WXPay wxPay = new WXPay(config);
+*/
+    ApiConfig apiConfig=new ApiConfig(WXPayConstants.APP_ID,WXPayConstants.SECRET);
 
     System.out.println(apiConfig.getAccessToken());
 
-System.out.println(WXPayUtil.getCurrentTimestamp());*/
+System.out.println(WXPayUtil.getCurrentTimestamp());
 
     //System.out.println(JSON.toJSONString(resultMap));
 

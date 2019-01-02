@@ -80,7 +80,7 @@
     insert into w_user (id, openid, wechat_account,
       company_id, vip_level, adv_count,
       ph_count, companion, balance,
-      `name`, `position`, mobile,
+      name, position, mobile,
       sex, avatar, country, province,
       city, area, create_date,
       del_flag)
@@ -318,7 +318,7 @@
     update w_user
     set company_id = #{companyId,jdbcType=VARCHAR},
         vip_level  = #{vipLevel,jdbcType=BIT},
-        ` name ` = #{name,jdbcType=VARCHAR},
+        name = #{name,jdbcType=VARCHAR},
         mobile = #{mobile,jdbcType=VARCHAR},
         sex = #{sex,jdbcType=BIT},
         avatar = #{avatar,jdbcType=VARCHAR},
@@ -384,7 +384,7 @@
 
   <update id="updateBaAdd" parameterType="com.thinkgem.jeesite.modules.qyb.entity.WUser">
     update w_user
-    set balance=balance+${balance}，
+    set balance=balance+${balance},
     companion=companion+1
     WHERE id=#{id}
   </update>
