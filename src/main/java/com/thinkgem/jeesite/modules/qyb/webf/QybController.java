@@ -22,6 +22,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -177,6 +178,21 @@ public class QybController extends BaseController {
 
   @RequestMapping(value = {"cooperation/list"})
   public String list(Cooperation entity, HttpServletRequest request, HttpServletResponse response) {
+
+    String way = entity.getWay();
+    if (StringUtils.isNoneBlank(way)) {
+      if (way.equals("1")) {
+        entity.setWay("业务合作");
+      } else if (way.equals("2")) {
+        entity.setWay("渠道招商");
+      } else if (way.equals("3")) {
+        entity.setWay("联合活动");
+      } else if (way.equals("4")) {
+        entity.setWay("代理加盟");
+      } else {
+        entity.setWay(null);
+      }
+    }
     Page<Cooperation> page = cooperationService.findPage(new Page<>(request, response), entity);
     return renderString(response, BaseResponse.success(page));
   }
@@ -218,10 +234,22 @@ public class QybController extends BaseController {
     return renderString(response, BaseResponse.success(payMap));
   }
 
+  @RequestMapping(value = "register")
+  public String register(HttpServletResponse response, WUser user) {
+    userService.save(user);
+    return renderString(response, BaseResponse.success("注册成功"));
+  }
+
+  @RequestMapping(value = "cooperation/save", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
+  public String save(HttpServletResponse response, @RequestBody Cooperation entity) {
+    cooperationService.save(entity);
+    return renderString(response, BaseResponse.success("发布成功"));
+  }
+
   @RequestMapping(value = "saveRecommend")
   public String saveRecommend(String referrerUserId, String applicantUserId, HttpServletResponse response) {
 
-    if(StringUtils.isNoneBlank(referrerUserId)&&StringUtils.isNoneBlank(applicantUserId)){
+    if (StringUtils.isNoneBlank(referrerUserId) && StringUtils.isNoneBlank(applicantUserId)) {
 
       recommendService.save(new Recommend(referrerUserId, applicantUserId, "1"));
 
@@ -235,23 +263,54 @@ public class QybController extends BaseController {
     return renderString(response, BaseResponse.success("success"));
   }
 
-  @RequestMapping(value = "register")
-  public String register(HttpServletResponse response, WUser user) {
-    userService.save(user);
-    return renderString(response, BaseResponse.success("注册成功"));
-  }
-
-  @RequestMapping(value = "cooperation/save", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
-  public String save(HttpServletResponse response, @RequestBody Cooperation entity) {
-    cooperationService.save(entity);
-    return renderString(response, BaseResponse.success("发布成功"));
-  }
-
   @RequestMapping(value = "updateViews")
   public String updateViews(String id, HttpServletResponse response) {
     cooperationService.updateViews(id);
     return renderString(response, BaseResponse.success("success"));
 
+  }
+
+  @RequestMapping(value = "uploadFile")
+  public String uploadFile(MultipartFile file,HttpServletRequest request,HttpServletResponse response,String userId) throws Exception{
+    if (file != null) {// 判断上传的文件是否为空
+      String path = null;// 文件路径
+      String type = null;// 文件类型
+      String fileName = file.getOriginalFilename();// 文件原名称
+      System.out.println("上传的文件原名称:" + fileName);
+      String suffix = "."+fileName.substring(fileName.lastIndexOf(".") + 1);
+      fileName=userId+suffix;
+      // 判断文件类型
+      type = fileName.indexOf(".") != -1 ? fileName.substring(fileName.lastIndexOf(".") + 1, fileName.length()) : null;
+      if (type != null) {// 判断文件类型是否为空
+        if ("GIF".equals(type.toUpperCase()) || "PNG".equals(type.toUpperCase()) || "JPG".equals(type.toUpperCase())) {
+          // 项目在容器中实际发布运行的根路径
+          String realPath = request.getSession().getServletContext().getRealPath("/");
+          // 自定义的文件名称
+          String trueFileName = String.valueOf(System.currentTimeMillis()) + fileName;
+          // 设置存放图片文件的路径
+          path = realPath+ System.getProperty("file.separator")   +"userfiles"+  System.getProperty("file.separator")   +userId+System.getProperty("file.separator");
+          File filePaht=new File(path);
+          if(!filePaht.exists()){
+            filePaht.mkdirs();
+          }
+          path=path+fileName;
+          System.out.println("存放图片文件的路径:" + path);
+          // 转存文件到指定的路径
+          file.transferTo(new File(path));
+          System.out.println("文件成功上传到指定目录下");
+        } else {
+          System.out.println("不是我们想要的文件类型,请按要求重新上传");
+          return null;
+        }
+      } else {
+        System.out.println("文件类型为空");
+        return null;
+      }
+    } else {
+      System.out.println("没有找到相对应的文件");
+      return null;
+    }
+    return renderString(response,BaseResponse.success("success"));
   }
 
   @RequestMapping(value = "user/save")
@@ -294,9 +353,9 @@ public class QybController extends BaseController {
 
       if (resultCode.equals("SUCCESS")) {
         //Integer totalFee = (Integer) resultMap.get("total_fee") / 100;
-        String  totalFeeStr =(String)resultMap.get("total_fee")  ;
-        Integer totalFee=Integer.parseInt(totalFeeStr)/1;
-        if (totalFee == 1) {
+        String totalFeeStr = (String) resultMap.get("total_fee");
+        Integer totalFee = Integer.parseInt(totalFeeStr) / 100;
+/*        if (totalFee == 1) {
           totalFee = 99;
         }
         if (totalFee == 2) {
@@ -307,7 +366,7 @@ public class QybController extends BaseController {
         }
         if (totalFee == 4) {
           totalFee = 1800;
-        }
+        }*/
         if (totalFee == 99) {
           //推广经理
           user.setVipLevel(2);
@@ -334,9 +393,9 @@ public class QybController extends BaseController {
         List<Recommend> recommends = recommendService.getByApAll(userId);
 
         BigDecimal bigDecimal = null;
-        BigDecimal bigDecimalt1 = new BigDecimal("0.35");
+        BigDecimal bigDecimalt1 = new BigDecimal("0.45");
 
-        BigDecimal bigDecimalt2 = new BigDecimal("0.15");
+        BigDecimal bigDecimalt2 = new BigDecimal("0.25");
         for (Recommend recommend : recommends) {
           if (totalFee == 99) {
             //推广经理

@@ -161,7 +161,8 @@
     cp.create_date AS "createDate",
     cp.status,
     c.name AS "company.name",
-    cp.area
+    cp.area,
+    cp.way
     FROM w_cooperation cp
     JOIN w_user u ON cp.user_id = u.id
     JOIN w_company c ON cp.company_id = c.id
@@ -181,6 +182,9 @@
       </if>
       <if test="endDate != null and endDate != '' ">
         <![CDATA[AND cp.create_date <= #{endDate}  ]]>
+      </if>
+      <if test="way != null and way != ''">
+        AND way=#{way}
       </if>
     </where>
     ORDER BY cp.create_date DESC
@@ -245,11 +249,12 @@
     cp.create_date AS "createDate",
     cp.status,
     c.name AS "company.name",
-    cp.area
+    cp.area,
+    cp.way
     FROM w_cooperation cp
     JOIN w_user u ON cp.user_id = u.id
     JOIN w_company c ON cp.company_id = c.id
-    WHERE cp.company_id=#{cpyId}
+    WHERE cp.company_id=#{cpyId} and cp.status=2
     ORDER BY cp.create_date DESC
   </select>
 

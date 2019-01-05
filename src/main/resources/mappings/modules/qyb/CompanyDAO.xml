@@ -25,14 +25,16 @@
     where id = #{id,jdbcType=VARCHAR}
   </delete>
   <insert id="insert" parameterType="com.thinkgem.jeesite.modules.qyb.entity.Company">
-    insert into w_company (id, `name` , logo, city, industry, introdction, site)
+    insert into w_company (id, user_id, name, logo, city, industry, introdction, site, create_date)
     values (#{id,jdbcType=VARCHAR},
+            #{userId,jdbcType=VARCHAR},
             #{name,jdbcType=VARCHAR},
             #{logo,jdbcType=VARCHAR},
             #{city,jdbcType=VARCHAR},
             #{industry,jdbcType=VARCHAR},
             #{introdction,jdbcType=VARCHAR},
-            #{site,jdbcType=VARCHAR})
+            #{site,jdbcType=VARCHAR},
+            #{createDate,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="com.thinkgem.jeesite.modules.qyb.entity.Company">
     insert into w_company
@@ -89,6 +91,11 @@
       <if test="name != null">
         `name` = #{name,jdbcType=VARCHAR},
       </if>
+
+      <if test="userId != null">
+        user_id=#{userId,jdbcType=VARCHAR},
+      </if>
+
       <if test="logo != null">
         logo = #{logo,jdbcType=VARCHAR},
       </if>
@@ -109,7 +116,7 @@
   </update>
   <update id="updatexx" parameterType="com.thinkgem.jeesite.modules.qyb.entity.Company">
     update w_company
-    set `name` = #{name,jdbcType=VARCHAR},
+    set name = #{name,jdbcType=VARCHAR},
         logo = #{logo,jdbcType=VARCHAR},
         city = #{city,jdbcType=VARCHAR},
         industry = #{industry,jdbcType=VARCHAR},
@@ -124,13 +131,14 @@
     name,
     logo,
     industry,
-    (SELECT count(1) FROM w_user u WHERE u.company_id=c.id) AS "userCount",
-    (SELECT count(1) FROM w_cooperation wcp  WHERE wcp.company_id=c.id) AS "cooperationCount"
+    (SELECT count(1) FROM w_user u WHERE u.id=c.user_id) AS "userCount",
+    (SELECT count(1) FROM w_cooperation wcp WHERE wcp.company_id=c.id) AS "cooperationCount"
     FROM w_company c
     WHERE
     1=1
-      <if test="name != null and name != ''">
-         AND c.name like CONCAT('%',#{name},'%')
-      </if>
+    <if test="name != null and name != ''">
+      AND c.name like CONCAT('%',#{name},'%')
+    </if>
+    ORDER BY c.create_date DESC
   </select>
 </mapper>

@@ -9,4 +9,10 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional(readOnly = true)
 public class CompanyService extends CrudService<CompanyDAO, Company> {
+
+  @Transactional(readOnly = false)
+  public int insert(Company company){
+    return dao.insert(company);
+  }
+
 }

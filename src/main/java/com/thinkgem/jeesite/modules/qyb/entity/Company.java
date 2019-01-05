@@ -38,6 +38,16 @@ public class Company extends DataEntity<Company> {
      */
     private String site;
 
+    private String userId;
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
     private Integer userCount;
     private Integer cooperationCount;
 

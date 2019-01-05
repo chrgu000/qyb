@@ -24,30 +24,33 @@ public class WUserService extends CrudService<UserDAO, WUser> {
     return dao.getByInfo(entity);
   }
 
+  public String getUserId(String openid) {
+    return dao.getUserId(openid);
+  }
+
   @Transactional(readOnly = false)
   public int subAdv(String id) {
     return dao.subAdv(id);
   }
 
   @Transactional(readOnly = false)
-  public int updateLevel(WUser entity) {
-    return dao.updateLevel(entity);
+  public int updateBaAdd(WUser user) {
+    return dao.updateBaAdd(user);
   }
 
   @Transactional(readOnly = false)
-  public int updateByOpenid(WUser user){
+  public int updateByOpenid(WUser user) {
     return dao.updateByOpenid(user);
   }
 
-
-  public String getUserId(String openid){
-    return dao.getUserId(openid);
+  @Transactional(readOnly = false)
+  public int updateCompany(WUser user) {
+    return dao.updateCompany(user);
   }
 
-
   @Transactional(readOnly = false)
-  public int updateBaAdd(WUser user){
-    return dao.updateBaAdd(user);
+  public int updateLevel(WUser entity) {
+    return dao.updateLevel(entity);
   }
 
 }

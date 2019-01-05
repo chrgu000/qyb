@@ -29,4 +29,6 @@ public interface UserDAO extends CrudDao<WUser> {
   String getUserId(String openid);
 
   int updateBaAdd(WUser user);
+
+  int updateCompany(WUser user);
 }

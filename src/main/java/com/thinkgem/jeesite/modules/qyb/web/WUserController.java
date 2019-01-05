@@ -32,7 +32,7 @@ public class WUserController extends BaseController {
   @ModelAttribute("user")
   public WUser get(@RequestParam(required = false) String id, Model model) {
     if (StringUtils.isNoneBlank(id)) {
-      return  wUserService.get(id);
+      return wUserService.get(id);
     } else {
       return new WUser();
     }
@@ -46,14 +46,34 @@ public class WUserController extends BaseController {
   }
 
   @RequestMapping(value = "updateLevel")
-  public String updateLevel(Model model, WUser wUser) {
-    wUserService.updateLevel(wUser);
-
-    if(wUser.getVipLevel()==1){
-
+  public String updateLevel(Model model, WUser user) {
+    if (user.getVipLevel() == 1) {
+      user.setVipLevel(1);
+      user.setAdvCount(0);
+      user.setPhCount(0);
+    } else if (user.getVipLevel() == 2) {
+      //推广经理
+      user.setVipLevel(2);
+      user.setAdvCount(0);
+      user.setPhCount(0);
+    } else if (user.getVipLevel() == 3) {
+      //VIP
+      user.setVipLevel(3);
+      user.setAdvCount(30);
+      user.setPhCount(380);
+    } else if (user.getVipLevel() == 4) {
+      //SVIP
+      user.setVipLevel(4);
+      user.setAdvCount(50);
+      user.setPhCount(1000);
+    } else if (user.getVipLevel() == 5) {
+      //SSVIP
+      user.setVipLevel(5);
+      user.setAdvCount(0);
+      user.setPhCount(0);
     }
-
+    wUserService.updateByOpenid(user);
     addMessage(model, "修改成功！");
-    return "redirect:" + adminPath + "/qyb/wUser/list?id="+wUser.getId();
+    return "redirect:" + adminPath + "/qyb/wUser/list?id=" + user.getId();
   }
 }

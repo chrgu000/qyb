@@ -3,7 +3,7 @@
 <mapper namespace="com.thinkgem.jeesite.modules.qyb.dao.UserDAO">
   <resultMap id="BaseResultMap" type="com.thinkgem.jeesite.modules.qyb.entity.WUser">
     <id column="id" jdbcType="VARCHAR" property="id"/>
-    <result column="company_id" jdbcType="VARCHAR" property="companyId"/>
+
     <result column="vip_level" jdbcType="BIT" property="vipLevel"/>
     <result column="name" jdbcType="VARCHAR" property="name"/>
     <result column="mobile" jdbcType="VARCHAR" property="mobile"/>
@@ -21,7 +21,6 @@
     u.position,
     u.vip_level AS "vipLevel",
     u.mobile,
-    u.company_id AS "company.id",
     u.create_date AS "createDate"
   </sql>
   <select id="get" parameterType="java.lang.String" resultType="WUser">
@@ -42,15 +41,16 @@
     u.wechat_account AS "wechatAccount",
     u.vip_level AS "vipLevel",
     u.mobile,
-    u.company_id AS "company.id",
+    cp.id AS "company.id",
     u.create_date AS "createDate",
-    u.avatar, cp.name AS "company.name",
+    u.avatar,
+    cp.name AS "company.name",
     u.adv_count AS "advCount",
     u.ph_count AS "phCount",
     u.balance,
     u.companion
     FROM w_user u
-    LEFT JOIN w_company cp ON cp.id=u.company_id
+    LEFT JOIN w_company cp ON cp.user_id=u.id
     <where>
       1=1
       <if test="openid != null and openid != '' ">
@@ -64,10 +64,9 @@
 
 
   <select id="getUserId" resultType="java.lang.String">
-    SELECT
-    u.id
+    SELECT u.id
     FROM w_user u
-    WHERE u.openid=#{openid}
+    WHERE u.openid = #{openid}
   </select>
 
 
@@ -77,20 +76,44 @@
     where id = #{id,jdbcType=VARCHAR}
   </delete>
   <insert id="insertXX" parameterType="com.thinkgem.jeesite.modules.qyb.entity.WUser">
-    insert into w_user (id, openid, wechat_account,
-      company_id, vip_level, adv_count,
-      ph_count, companion, balance,
-      name, position, mobile,
-      sex, avatar, country, province,
-      city, area, create_date,
-      del_flag)
-    values (#{id,jdbcType=VARCHAR}, #{openid,jdbcType=VARCHAR}, #{wechatAccount,jdbcType=VARCHAR},
-      #{companyId,jdbcType=VARCHAR}, #{vipLevel,jdbcType=BIT}, #{advCount,jdbcType=INTEGER},
-      #{phCount,jdbcType=INTEGER}, #{companion,jdbcType=INTEGER}, #{balance,jdbcType=DECIMAL},
-      #{name,jdbcType=VARCHAR}, #{position,jdbcType=VARCHAR}, #{mobile,jdbcType=VARCHAR},
-      #{sex,jdbcType=BIT}, #{avatar,jdbcType=VARCHAR}, #{country,jdbcType=VARCHAR}, #{province,jdbcType=VARCHAR},
-      #{city,jdbcType=VARCHAR}, #{area,jdbcType=VARCHAR}, #{createDate,jdbcType=TIMESTAMP},
-      #{delFlag,jdbcType=CHAR})
+    insert into w_user (id,
+                        openid,
+                        wechat_account,
+                        vip_level,
+                        adv_count,
+                        ph_count,
+                        companion,
+                        balance,
+                        name,
+                        position,
+                        mobile,
+                        sex,
+                        avatar,
+                        country,
+                        province,
+                        city,
+                        area,
+                        create_date,
+                        del_flag)
+    values (#{id,jdbcType=VARCHAR},
+            #{openid,jdbcType=VARCHAR},
+            #{wechatAccount,jdbcType=VARCHAR},
+            #{vipLevel,jdbcType=BIT},
+            #{advCount,jdbcType=INTEGER},
+            #{phCount,jdbcType=INTEGER},
+            #{companion,jdbcType=INTEGER},
+            #{balance,jdbcType=DECIMAL},
+            #{name,jdbcType=VARCHAR},
+            #{position,jdbcType=VARCHAR},
+            #{mobile,jdbcType=VARCHAR},
+            #{sex,jdbcType=BIT},
+            #{avatar,jdbcType=VARCHAR},
+            #{country,jdbcType=VARCHAR},
+            #{province,jdbcType=VARCHAR},
+            #{city,jdbcType=VARCHAR},
+            #{area,jdbcType=VARCHAR},
+            #{createDate,jdbcType=TIMESTAMP},
+            #{delFlag,jdbcType=CHAR})
   </insert>
   <insert id="insert" parameterType="com.thinkgem.jeesite.modules.qyb.entity.WUser">
     insert into w_user
@@ -103,9 +126,6 @@
       </if>
       <if test="wechatAccount != null">
         wechat_account,
-      </if>
-      <if test="companyId != null">
-        company_id,
       </if>
       <if test="vipLevel != null">
         vip_level,
@@ -166,9 +186,6 @@
       <if test="wechatAccount != null">
         #{wechatAccount,jdbcType=VARCHAR},
       </if>
-      <if test="companyId != null">
-        #{companyId,jdbcType=VARCHAR},
-      </if>
       <if test="vipLevel != null">
         #{vipLevel,jdbcType=BIT},
       </if>
@@ -224,9 +241,6 @@
     <set>
       <if test="wechatAccount != null and wechatAccount != ''">
         wechat_account=#{wechatAccount,jdbcType=VARCHAR},
-      </if>
-      <if test="companyId != null">
-        company_id = #{companyId,jdbcType=VARCHAR},
       </if>
       <if test="vipLevel != null">
         vip_level = #{vipLevel,jdbcType=BIT},
@@ -316,17 +330,16 @@
 
   <update id="updateByPrimaryKey" parameterType="com.thinkgem.jeesite.modules.qyb.entity.WUser">
     update w_user
-    set company_id = #{companyId,jdbcType=VARCHAR},
-        vip_level  = #{vipLevel,jdbcType=BIT},
-        name = #{name,jdbcType=VARCHAR},
-        mobile = #{mobile,jdbcType=VARCHAR},
-        sex = #{sex,jdbcType=BIT},
-        avatar = #{avatar,jdbcType=VARCHAR},
-        country = #{country,jdbcType=VARCHAR},
-        province = #{province,jdbcType=VARCHAR},
-        city = #{city,jdbcType=VARCHAR},
-        area = #{area,jdbcType=VARCHAR}
-        where id = #{id,jdbcType=VARCHAR}
+    set vip_level  = #{vipLevel,jdbcType=BIT},
+        name       = #{name,jdbcType=VARCHAR},
+        mobile     = #{mobile,jdbcType=VARCHAR},
+        sex        = #{sex,jdbcType=BIT},
+        avatar     = #{avatar,jdbcType=VARCHAR},
+        country    = #{country,jdbcType=VARCHAR},
+        province   = #{province,jdbcType=VARCHAR},
+        city       = #{city,jdbcType=VARCHAR},
+        area       = #{area,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
   </update>
 
   <select id="findList" resultType="WUser">
@@ -336,10 +349,10 @@
     u.vip_level AS "vipLevel",
     u.mobile,
     c.name AS "company.name",
-    u.company_id AS "company.id",
+    c.id AS "company.id",
     u.create_date AS "createDate"
     FROM w_user u
-    JOIN w_company c ON u.company_id = c.id
+    LEFT JOIN w_company c ON u.id = c.user_id
     <where>
       u.del_flag=#{DEL_FLAG_NORMAL}
       <if test="id != null and id != '' ">
@@ -362,31 +375,31 @@
   </update>
 
   <select id="findByCpy" resultType="com.thinkgem.jeesite.modules.qyb.entity.WUser">
-    SELECT
-    u.name ,u.avatar,u.position
-    FROM
-    w_user u
-    WHERE u.company_id=#{cpyId}
+    SELECT u.name, u.avatar, u.position
+    FROM w_user u
+    LEFT JOIN w_company c ON c.user_id=u.id
+    WHERE c.id = #{cpyId}
   </select>
 
 
   <update id="subAdv">
-  update w_user
-  set adv_count=adv_count-1
-  where id=#{id}
-</update>
+    update w_user
+    set adv_count = adv_count - 1
+    where id = #{id}
+  </update>
 
   <select id="getAdvCount" resultType="java.lang.Integer">
-    select adv_count FROM w_user
-    WHERE id=#{id}
+    select adv_count
+    FROM w_user
+    WHERE id = #{id}
   </select>
 
 
   <update id="updateBaAdd" parameterType="com.thinkgem.jeesite.modules.qyb.entity.WUser">
     update w_user
-    set balance=balance+${balance},
-    companion=companion+1
-    WHERE id=#{id}
+    set balance   = balance + ${balance},
+        companion = companion + 1
+    WHERE id = #{id}
   </update>
 
 
