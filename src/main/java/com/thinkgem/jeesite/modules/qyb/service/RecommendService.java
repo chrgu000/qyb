@@ -3,6 +3,8 @@ package com.thinkgem.jeesite.modules.qyb.service;
 import com.thinkgem.jeesite.common.service.CrudService;
 import com.thinkgem.jeesite.modules.qyb.dao.RecommendDAO;
 import com.thinkgem.jeesite.modules.qyb.entity.Recommend;
+import com.thinkgem.jeesite.modules.qyb.entity.WUser;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,5 +19,9 @@ public class RecommendService extends CrudService<RecommendDAO, Recommend> {
 
   public List<Recommend> getByApAll(String refId) {
     return dao.getByApAll(refId);
+  }
+
+  public  List<WUser> getTeam(String userId){
+    return dao.getTeam(userId);
   }
 }

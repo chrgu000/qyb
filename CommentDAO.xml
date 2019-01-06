@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.qyb.dao.CommentDAO">
+  <resultMap id="BaseResultMap" type="com.thinkgem.jeesite.modules.qyb.entity.WComment">
+    <id column="id" jdbcType="VARCHAR" property="id"/>
+    <result column="cooperation_id" jdbcType="VARCHAR" property="cooperationId"/>
+    <result column="content" jdbcType="VARCHAR" property="content"/>
+    <result column="user_id" jdbcType="VARCHAR" property="userId"/>
+    <result column="user_name" jdbcType="VARCHAR" property="userName"/>
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, cooperation_id, content, user_id, user_name
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from w_comment
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from w_comment
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.thinkgem.jeesite.modules.qyb.entity.WComment">
+    insert into w_comment (id, cooperation_id, content, 
+      user_id, user_name)
+    values (#{id,jdbcType=VARCHAR}, #{cooperationId,jdbcType=VARCHAR}, #{content,jdbcType=VARCHAR}, 
+      #{userId,jdbcType=VARCHAR}, #{userName,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.thinkgem.jeesite.modules.qyb.entity.WComment">
+    insert into w_comment
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="cooperationId != null">
+        cooperation_id,
+      </if>
+      <if test="content != null">
+        content,
+      </if>
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="userName != null">
+        user_name,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="cooperationId != null">
+        #{cooperationId,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null">
+        #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null">
+        #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="userName != null">
+        #{userName,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.thinkgem.jeesite.modules.qyb.entity.WComment">
+    update w_comment
+    <set>
+      <if test="cooperationId != null">
+        cooperation_id = #{cooperationId,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null">
+        content = #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="userName != null">
+        user_name = #{userName,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.thinkgem.jeesite.modules.qyb.entity.WComment">
+    update w_comment
+    set cooperation_id = #{cooperationId,jdbcType=VARCHAR},
+      content = #{content,jdbcType=VARCHAR},
+      user_id = #{userId,jdbcType=VARCHAR},
+      user_name = #{userName,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+
+
+  <select id="getByCopId" resultType="com.thinkgem.jeesite.modules.qyb.entity.WComment">
+
+    SELECT
+    wu.avatar AS "user.avatar",
+     wu.name AS "user.name",
+     wc.content,
+     wc.create_date AS "createDate"
+     FROM w_comment wc
+    JOIN w_user wu ON wu.id=wc.user_id
+    where wc.cooperation_id=#{copId}
+  </select>
+</mapper>

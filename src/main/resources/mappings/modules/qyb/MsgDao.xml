@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.qyb.dao.MsgDao">
+
+
+    <insert id="insert" parameterType="com.thinkgem.jeesite.modules.qyb.entity.Msg">
+        INSERT INTO w_msg(id,user_id,content)values(#{id},#{userId},#{content})
+    </insert>
+
+    <select id="findList" resultType="com.thinkgem.jeesite.modules.qyb.entity.Msg">
+        SELECT id,content
+        FROM w_msg
+        WHERE user_id=#{userId}
+    </select>
+
+</mapper>

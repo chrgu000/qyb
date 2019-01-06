@@ -132,7 +132,7 @@
     logo,
     industry,
     (SELECT count(1) FROM w_user u WHERE u.id=c.user_id) AS "userCount",
-    (SELECT count(1) FROM w_cooperation wcp WHERE wcp.company_id=c.id) AS "cooperationCount"
+    (SELECT count(1) FROM w_cooperation wcp WHERE wcp.company_id=c.id and wcp.status=2) AS "cooperationCount"
     FROM w_company c
     WHERE
     1=1
