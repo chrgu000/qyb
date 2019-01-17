@@ -510,6 +510,14 @@ public class WXPay {
     }
 
 
+
+    public Map<String, String> transfers(Map<String, String> reqData) throws Exception {
+        String url  = WXPayConstants.TRANSFERS;
+        String respXml = this.requestWithCert(url, this.fillRequestData(reqData),  this.config.getHttpConnectTimeoutMs(),  this.config.getHttpConnectTimeoutMs());
+        return this.processResponseXml(respXml);
+    }
+
+
     /**
      * 作用：退款查询<br>
      * 场景：刷卡支付、公共号支付、扫码支付、APP支付
@@ -518,7 +526,7 @@ public class WXPay {
      * @throws Exception
      */
     public Map<String, String> refundQuery(Map<String, String> reqData) throws Exception {
-        return this.refundQuery(reqData, this.config.getHttpConnectTimeoutMs(), this.config.getHttpReadTimeoutMs());
+        return this.refundQuery(reqData, this.config.getHttpConnectTimeoutMs(),  this.config.getHttpConnectTimeoutMs());
     }
 
 

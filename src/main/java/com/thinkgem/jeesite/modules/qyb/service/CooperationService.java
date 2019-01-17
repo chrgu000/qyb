@@ -27,7 +27,9 @@ public class CooperationService extends CrudService<CooperationDAO, Cooperation>
 
   @Transactional(readOnly = false)
   public void save(Cooperation entity) {
-    wUserService.subAdv(entity.getUser().getId());
+    if(entity.getUser().getVipLevel()!=5){
+      wUserService.subAdv(entity.getUser().getId());
+    }
     super.save(entity);
   }
 

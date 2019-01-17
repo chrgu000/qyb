@@ -53,4 +53,14 @@ public class WUserService extends CrudService<UserDAO, WUser> {
     return dao.updateLevel(entity);
   }
 
+  public Integer getPhCount(String id){
+    return dao.getPhCount(id);
+  }
+
+  @Transactional(readOnly = false)
+  public int subPh(String id){
+    return dao.subPh(id);
+  }
+
+
 }

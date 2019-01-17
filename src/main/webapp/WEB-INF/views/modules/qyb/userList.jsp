@@ -53,6 +53,7 @@
         <th>所属公司</th>
         <th>职位</th>
         <th>手机号码</th>
+        <th>余额</th>
         <th>注册时间</th>
         <th>操作</th>
     </thead>
@@ -68,6 +69,7 @@
             <td>${item.company.name}</td>
             <td>${item.position}</td>
             <td>${item.mobile}</td>
+            <td>${item.balance}</td>
             <td>
                     <fmt:formatDate value="${item.createDate}" type="both" pattern="yyyy-MM-dd HH:mm:ss"/>
             <td>

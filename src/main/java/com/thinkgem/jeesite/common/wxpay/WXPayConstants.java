@@ -41,6 +41,9 @@ public class WXPayConstants {
     public static final String REPORT_URL_SUFFIX       = "/payitil/report";
     public static final String SHORTURL_URL_SUFFIX     = "/tools/shorturl";
     public static final String AUTHCODETOOPENID_URL_SUFFIX = "/tools/authcodetoopenid";
+    public static final String TRANSFERS= "/mmpaymkttransfers/promotion/transfers";
+
+
 
     // sandbox
     public static final String SANDBOX_MICROPAY_URL_SUFFIX     = "/sandboxnew/pay/micropay";
@@ -60,6 +63,6 @@ public class WXPayConstants {
     public static String SECRET = "9217ff71cb332917ccf0ba2ffc7f675c"; // 真实
     public static final String MCH_ID = "1521746531"; // 真实
     public static final String API_KEY = "XcxmT58Kdp5jOEUCLLNK6pj07RcPqXXK"; // 真实
-    public static String APICLIENT_CERT = "/data/ops/cert/apiclient_cert.p12"; // 真实
+    public static String APICLIENT_CERT = "E:\\work\\small-program\\qyb\\cert\\apiclient_cert.p12"; // 真实
 }
 

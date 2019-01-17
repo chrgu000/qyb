@@ -31,6 +31,7 @@ import java.io.*;
 import java.math.BigDecimal;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -90,6 +91,17 @@ public class QybController extends BaseController {
         return renderString(response, BaseResponse.success(advCount));
     }
 
+
+    @RequestMapping(value = {"user/getPhCount"})
+    public String getPhCount(String id, HttpServletResponse response) {
+        Integer phCount = userService.getPhCount(id);
+        return renderString(response, BaseResponse.success(phCount));
+    }
+    @RequestMapping(value = {"user/subPh"})
+    public String subPh(String id, HttpServletResponse response) {
+         userService.subPh(id);
+        return renderString(response, BaseResponse.success("success"));
+    }
     @RequestMapping(value = "getAdver", produces = "application/json")
     public String getAdver(HttpServletResponse response) {
         Adver adver = cooperationService.getAdver();
@@ -200,6 +212,31 @@ public class QybController extends BaseController {
         return renderString(response, BaseResponse.success(page));
     }
 
+
+    @RequestMapping(value = "/wx/transfers")
+    public String transfers(HttpServletResponse response, String openid, String total_fee)throws Exception{
+        WXPayConfigImpl config = WXPayConfigImpl.getInstance();
+        WXPay wxPay = new WXPay(config, false, false);
+        Map<String, String> reqData = new HashMap<>();
+        reqData.put("mch_appid", config.getAppID());
+        reqData.put("mchid", config.getMchID());
+        reqData.put("nonce_str", WXPayUtil.generateNonceStr());
+        //reqData.put("sign_type", WXPayConstants.MD5);
+        reqData.put("partner_trade_no", WXPayUtil.getPayNo());
+        reqData.put("openid", openid);
+
+        reqData.put("check_name", "NO_CHECK");
+        reqData.put("amount","1");
+        reqData.put("desc","xx");
+        reqData.put("spbill_create_ip","47.105.199.35");
+
+        reqData.put("sign", WXPayUtil.generateSignature(reqData, config.getKey(), WXPayConstants.SignType.MD5));
+
+        logger.error(JSON.toJSONString(reqData));
+        Map<String, String> resultMap = wxPay.transfers(reqData);
+        return renderString(response, BaseResponse.success(resultMap));
+    }
+
     @RequestMapping(value = "/wx/payment")
     public String payment(HttpServletResponse response, String openid, String total_fee) throws Exception {
         WXPayConfigImpl config = WXPayConfigImpl.getInstance();
@@ -238,7 +275,8 @@ public class QybController extends BaseController {
     }
 
     @RequestMapping(value = "register")
-    public String register(HttpServletResponse response, WUser user) {
+    public String register(HttpServletResponse response, WUser user) throws Exception {
+      //user.setName(URLEncoder.encode(user.getName(), "utf-8"));
         userService.save(user);
         return renderString(response, BaseResponse.success("注册成功"));
     }
@@ -381,13 +419,13 @@ public class QybController extends BaseController {
                 } else if (totalFee == 500) {
                     //VIP
                     user.setVipLevel(3);
-                    user.setAdvCount(50);
+                    user.setAdvCount(30);
                     user.setPhCount(500);
                     msg.setContent("恭喜您，成功开通VIP会员！");
                 } else if (totalFee == 1000) {
                     //SVIP
                     user.setVipLevel(4);
-                    user.setAdvCount(200);
+                    user.setAdvCount(50);
                     user.setPhCount(1000);
                     msg.setContent("恭喜您，成功开通SVIP会员！");
                 } else if (totalFee == 1800) {

@@ -23,6 +23,14 @@ public interface UserDAO extends CrudDao<WUser> {
   int subAdv(String id);
 
 
+
+
+  Integer getPhCount(String id);
+
+
+  int subPh(String id);
+
+
   int updateByOpenid(WUser user);
 
 

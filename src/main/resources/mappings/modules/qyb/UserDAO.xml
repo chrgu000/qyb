@@ -19,6 +19,7 @@
     u.openid,
     u.name,
     u.position,
+    u.balance,
     u.vip_level AS "vipLevel",
     u.mobile,
     u.create_date AS "createDate"
@@ -243,7 +244,7 @@
         wechat_account=#{wechatAccount,jdbcType=VARCHAR},
       </if>
       <if test="vipLevel != null">
-        vip_level = #{vipLevel,jdbcType=BIT},
+        vip_level = #{vipLevel},
       </if>
       <if test="advCount != null">
         adv_count = #{advCount,jdbcType=INTEGER},
@@ -315,6 +316,9 @@
       <if test="phCount != null">
         ph_count = #{phCount,jdbcType=INTEGER},
       </if>
+      <if test="balance != null">
+        balance = #{balance,jdbcType=DECIMAL},
+      </if>
     </set>
     <where>
       1=1
@@ -347,6 +351,7 @@
     u.name,
     u.position,
     u.vip_level AS "vipLevel",
+    u.balance,
     u.mobile,
     c.name AS "company.name",
     c.id AS "company.id",
@@ -393,7 +398,16 @@
     FROM w_user
     WHERE id = #{id}
   </select>
-
+  <select id="getPhCount" resultType="java.lang.Integer">
+    select ph_count
+    FROM w_user
+    WHERE id = #{id}
+  </select>
+  <update id="subPh">
+    update w_user
+    set ph_count = ph_count - 1
+    where id = #{id}
+  </update>
 
   <update id="updateBaAdd" parameterType="com.thinkgem.jeesite.modules.qyb.entity.WUser">
     update w_user

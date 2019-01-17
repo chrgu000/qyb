@@ -53,7 +53,12 @@
             </form:select>
         </div>
     </div>
-
+    <div class="control-group">
+        <label class="control-label">余额:</label>
+        <div class="controls">
+            <form:input path="balance" htmlEscape="false" maxlength="50" class="required" />
+        </div>
+    </div>
     <div class="form-actions">
         <input id="btnSubmit" class="btn btn-primary" type="submit" value="保 存"/>&nbsp;
         <input id="btnCancel" class="btn" type="button" value="返 回" onclick="history.go(-1)"/>
