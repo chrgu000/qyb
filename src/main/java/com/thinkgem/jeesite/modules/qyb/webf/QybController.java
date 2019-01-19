@@ -53,6 +53,8 @@ public class QybController extends BaseController {
     private WCommentService wCommentService;
     @Resource
     private MsgService msgService;
+    @Resource
+    private ApplyService applyService;
 
 
     @RequestMapping(value = {"company/info"})
@@ -437,6 +439,9 @@ public class QybController extends BaseController {
                 }
                 userService.updateByOpenid(user);
 
+
+                recommendService.updateAp(userId);
+
                 msgService.save(msg);
 
                 //加推广金钱
@@ -493,6 +498,7 @@ public class QybController extends BaseController {
                     entity.setBalance(bigDecimal);
                     userService.updateBaAdd(entity);
                 }
+
             }
 
         }
@@ -515,6 +521,18 @@ public class QybController extends BaseController {
     public String getTeam(String userId, HttpServletResponse response) {
         List<WUser> users = recommendService.getTeam(userId);
         return renderString(response, users);
+    }
+    @RequestMapping(value = "addApply")
+    public String addApply(String userId,BigDecimal amount,HttpServletResponse response){
+        ApplyCash applyCash=new ApplyCash();
+        applyCash.setUserId(userId);
+        applyCash.setAmount(amount);
+        applyCash.setStatus(1);
+        applyService.save(applyCash);
+
+        userService.updateBal(userId);
+
+        return renderString(response,BaseResponse.success("success"));
     }
 
 }

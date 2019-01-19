@@ -1,43 +1,42 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.thinkgem.jeesite.modules.qyb.dao.CooperationDAO">
+<mapper namespace="com.thinkgem.jeesite.modules.qyb.entity.CooperationDAO">
   <resultMap id="BaseResultMap" type="com.thinkgem.jeesite.modules.qyb.entity.Cooperation">
-    <id column="id" jdbcType="VARCHAR" property="id"/>
-    <result column="user_id" jdbcType="VARCHAR" property="userId"/>
-    <result column="company_id" jdbcType="VARCHAR" property="companyId"/>
-    <result column="title" jdbcType="VARCHAR" property="title"/>
-    <result column="area" jdbcType="VARCHAR" property="area"/>
-    <result column="way" jdbcType="VARCHAR" property="way"/>
-    <result column="offer_resource" jdbcType="VARCHAR" property="offerResource"/>
-    <result column="need_resource" jdbcType="VARCHAR" property="needResource"/>
-    <result column="status" jdbcType="BIT" property="status"/>
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="user_id" jdbcType="VARCHAR" property="userId" />
+    <result column="user_name" jdbcType="VARCHAR" property="userName" />
+    <result column="company_id" jdbcType="VARCHAR" property="companyId" />
+    <result column="company_name" jdbcType="VARCHAR" property="companyName" />
+    <result column="title" jdbcType="VARCHAR" property="title" />
+    <result column="area" jdbcType="VARCHAR" property="area" />
+    <result column="way" jdbcType="VARCHAR" property="way" />
+    <result column="offer_resource" jdbcType="VARCHAR" property="offerResource" />
+    <result column="need_resource" jdbcType="VARCHAR" property="needResource" />
+    <result column="status" jdbcType="BIT" property="status" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, user_id AS "userId", company_id AS "companyId", title, area, way, offer_resource AS "offerResource",
-    need_resource AS "needResource", `status`
+    id, user_id, user_name, company_id, company_name, title, area, way, offer_resource, 
+    need_resource, `status`
   </sql>
-  <select id="get" parameterType="java.lang.String" resultType="Cooperation">
-    select
-    <include refid="Base_Column_List"/>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
     from w_cooperation
     where id = #{id,jdbcType=VARCHAR}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
-    delete
-    from w_cooperation
+    delete from w_cooperation
     where id = #{id,jdbcType=VARCHAR}
   </delete>
   <insert id="insert" parameterType="com.thinkgem.jeesite.modules.qyb.entity.Cooperation">
-    insert into w_cooperation (id, user_id, company_id, title, area, way, offer_resource, need_resource, `status`)
-    values (#{id,jdbcType=VARCHAR},
-            #{user.id,jdbcType=VARCHAR},
-            #{company.id,jdbcType=VARCHAR},
-            #{title,jdbcType=VARCHAR},
-            #{area,jdbcType=VARCHAR},
-            #{way,jdbcType=VARCHAR},
-            #{offerResource,jdbcType=VARCHAR},
-            #{needResource,jdbcType=VARCHAR},
-            #{status,jdbcType=BIT})
+    insert into w_cooperation (id, user_id, user_name, 
+      company_id, company_name, title, 
+      area, way, offer_resource, 
+      need_resource, `status`)
+    values (#{id,jdbcType=VARCHAR}, #{userId,jdbcType=VARCHAR}, #{userName,jdbcType=VARCHAR}, 
+      #{companyId,jdbcType=VARCHAR}, #{companyName,jdbcType=VARCHAR}, #{title,jdbcType=VARCHAR}, 
+      #{area,jdbcType=VARCHAR}, #{way,jdbcType=VARCHAR}, #{offerResource,jdbcType=VARCHAR}, 
+      #{needResource,jdbcType=VARCHAR}, #{status,jdbcType=BIT})
   </insert>
   <insert id="insertSelective" parameterType="com.thinkgem.jeesite.modules.qyb.entity.Cooperation">
     insert into w_cooperation
@@ -48,11 +47,15 @@
       <if test="userId != null">
         user_id,
       </if>
-
+      <if test="userName != null">
+        user_name,
+      </if>
       <if test="companyId != null">
         company_id,
       </if>
-
+      <if test="companyName != null">
+        company_name,
+      </if>
       <if test="title != null">
         title,
       </if>
@@ -79,11 +82,15 @@
       <if test="userId != null">
         #{userId,jdbcType=VARCHAR},
       </if>
-
+      <if test="userName != null">
+        #{userName,jdbcType=VARCHAR},
+      </if>
       <if test="companyId != null">
         #{companyId,jdbcType=VARCHAR},
       </if>
-
+      <if test="companyName != null">
+        #{companyName,jdbcType=VARCHAR},
+      </if>
       <if test="title != null">
         #{title,jdbcType=VARCHAR},
       </if>
@@ -110,11 +117,15 @@
       <if test="userId != null">
         user_id = #{userId,jdbcType=VARCHAR},
       </if>
-
+      <if test="userName != null">
+        user_name = #{userName,jdbcType=VARCHAR},
+      </if>
       <if test="companyId != null">
         company_id = #{companyId,jdbcType=VARCHAR},
       </if>
-
+      <if test="companyName != null">
+        company_name = #{companyName,jdbcType=VARCHAR},
+      </if>
       <if test="title != null">
         title = #{title,jdbcType=VARCHAR},
       </if>
@@ -138,142 +149,16 @@
   </update>
   <update id="updateByPrimaryKey" parameterType="com.thinkgem.jeesite.modules.qyb.entity.Cooperation">
     update w_cooperation
-    set user_id        = #{userId,jdbcType=VARCHAR},
-        company_id     = #{companyId,jdbcType=VARCHAR},
-        title          = #{title,jdbcType=VARCHAR},
-        area           = #{area,jdbcType=VARCHAR},
-        way            = #{way,jdbcType=VARCHAR},
-        offer_resource = #{offerResource,jdbcType=VARCHAR},
-        need_resource  = #{needResource,jdbcType=VARCHAR},
-        `status` = #{status,jdbcType=BIT}
-        where id = #{id,jdbcType=VARCHAR}
+    set user_id = #{userId,jdbcType=VARCHAR},
+      user_name = #{userName,jdbcType=VARCHAR},
+      company_id = #{companyId,jdbcType=VARCHAR},
+      company_name = #{companyName,jdbcType=VARCHAR},
+      title = #{title,jdbcType=VARCHAR},
+      area = #{area,jdbcType=VARCHAR},
+      way = #{way,jdbcType=VARCHAR},
+      offer_resource = #{offerResource,jdbcType=VARCHAR},
+      need_resource = #{needResource,jdbcType=VARCHAR},
+      `status` = #{status,jdbcType=BIT}
+    where id = #{id,jdbcType=VARCHAR}
   </update>
-
-  <select id="findList" resultType="Cooperation">
-    SELECT cp.id,
-    cp.title,
-    cp.offer_resource AS "offerResource",
-    u.id AS "user.id",
-    u.position AS "user.position",
-    u.avatar AS "user.avatar",
-    u.name AS "user.name",
-    cp.views,
-    cp.create_date AS "createDate",
-    cp.status,
-    c.name AS "company.name",
-    cp.area,
-    cp.way
-    FROM w_cooperation cp
-    JOIN w_user u ON cp.user_id = u.id
-    JOIN w_company c ON cp.company_id = c.id
-    <where>
-      cp.del_flag = #{DEL_FLAG_NORMAL}
-      <if test="status != null and status != '' ">
-        AND cp.status=#{status}
-      </if>
-      <if test="user != null and user.name != null and user.name != ''">
-        AND u.name like CONCAT('%',#{user.name},'%')
-      </if>
-      <if test=" userId != null and userId != ''">
-        AND u.id =#{userId}
-      </if>
-      <if test="company != null and company.name != null and company.name != ''">
-        AND cp.name like CONCAT('%',#{company.name},'%')
-      </if>
-      <if test="beginDate != null and beginDate != '' ">
-        <![CDATA[AND cp.create_date >= #{beginDate}]]>
-      </if>
-      <if test="endDate != null and endDate != '' ">
-        <![CDATA[AND cp.create_date <= #{endDate}  ]]>
-      </if>
-      <if test="way != null and way != ''">
-        AND way=#{way}
-      </if>
-    </where>
-    ORDER BY cp.create_date DESC
-  </select>
-
-  <select id="getAdver" resultType="com.thinkgem.jeesite.modules.qyb.entity.Adver">
-    SELECT id, photo
-    FROM w_adver
-    where id = 1;
-  </select>
-
-  <update id="udpateAdver" parameterType="com.thinkgem.jeesite.modules.qyb.entity.Adver">
-    update w_adver
-    set photo = #{photo,jdbcType=VARCHAR}
-    where id = 1;
-  </update>
-
-  <update id="updateStatus">
-    UPDATE w_cooperation
-    SET status = #{status}
-    WHERE id = #{id}
-  </update>
-
-  <update id="delete">
-    UPDATE w_cooperation
-    SET del_flag = #{DEL_FLAG_DELETE}
-    WHERE id = #{id}
-  </update>
-
-
-  <select id="getDetail" resultType="Cooperation">
-    SELECT
-    wu.id AS "user.id",
-    wu.name AS "user.name",
-    wu.position AS "user.position",
-    wu.avatar AS "user.avatar",
-    wu.mobile AS "user.mobile",
-    wc.offer_resource AS "offerResource",
-    wc.area,
-    wc.create_date AS "createDate",
-    wc.views,
-    wcy.name AS "company.name",
-    wcy.logo AS "company.logo",
-    wcy.industry AS "company.industry",
-    (SELECT count(1) FROM w_user u WHERE u.company_id=wcy.id) AS "company.userCount",
-    (SELECT count(1) FROM w_cooperation wcp  WHERE wcp.company_id=wcy.id) AS "company.cooperationCount"
-    FROM w_cooperation wc
-    JOIN w_user wu ON wu.id=wc.user_id
-    JOIN w_company wcy ON wcy.id=wc.company_id
-    WHERE wc.id=#{id}
-  </select>
-
-
-  <select id="findCotList" resultType="Cooperation">
-    SELECT cp.id,
-    cp.title,
-    cp.offer_resource AS "offerResource",
-    u.id AS "user.id",
-    u.position AS "user.position",
-    u.avatar AS "user.avatar",
-    u.name AS "user.name",
-    cp.views,
-    cp.create_date AS "createDate",
-    cp.status,
-    c.name AS "company.name",
-    cp.area,
-    cp.way
-    FROM w_cooperation cp
-    JOIN w_user u ON cp.user_id = u.id
-    JOIN w_company c ON cp.company_id = c.id
-    WHERE cp.company_id=#{cpyId} and cp.status=2
-    ORDER BY cp.create_date DESC
-  </select>
-
-
-  <update id="updateViews">
-    update w_cooperation
-    set views=views+1
-    where id=#{id}
-  </update>
-
-  <select id="findByUser" resultType="Cooperation">
-    select wc.offer_resource AS "offerResource",
-    wc.views
-    FROM w_cooperation wc
-    WHERE user_id=#{userId}
-  </select>
-
 </mapper>

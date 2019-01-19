@@ -2,6 +2,8 @@ package com.thinkgem.jeesite.modules.qyb.entity;
 
 import com.thinkgem.jeesite.common.persistence.DataEntity;
 
+import java.math.BigDecimal;
+
 /**
  * w_apply_cash
  * @author 
@@ -16,12 +18,12 @@ public class ApplyCash extends DataEntity<ApplyCash> {
     /**
      * 提现金额
      */
-    private Integer amount;
+    private BigDecimal amount;
 
     /**
      * 状态1.待审核2.审核通过
      */
-    private Boolean status;
+    private int status;
 
     private static final long serialVersionUID = 1L;
 
@@ -33,19 +35,19 @@ public class ApplyCash extends DataEntity<ApplyCash> {
         this.userId = userId;
     }
 
-    public Integer getAmount() {
+    public BigDecimal getAmount() {
         return amount;
     }
 
-    public void setAmount(Integer amount) {
+    public void setAmount(BigDecimal amount) {
         this.amount = amount;
     }
 
-    public Boolean getStatus() {
+    public int getStatus() {
         return status;
     }
 
-    public void setStatus(Boolean status) {
+    public void setStatus(int status) {
         this.status = status;
     }
 
@@ -63,8 +65,7 @@ public class ApplyCash extends DataEntity<ApplyCash> {
         ApplyCash other = (ApplyCash) that;
         return (this.getId() == null ? other.getId() == null : this.getId().equals(other.getId()))
             && (this.getUserId() == null ? other.getUserId() == null : this.getUserId().equals(other.getUserId()))
-            && (this.getAmount() == null ? other.getAmount() == null : this.getAmount().equals(other.getAmount()))
-            && (this.getStatus() == null ? other.getStatus() == null : this.getStatus().equals(other.getStatus()));
+            && (this.getAmount() == null ? other.getAmount() == null : this.getAmount().equals(other.getAmount())) ;
     }
 
     @Override
@@ -73,8 +74,7 @@ public class ApplyCash extends DataEntity<ApplyCash> {
         int result = 1;
         result = prime * result + ((getId() == null) ? 0 : getId().hashCode());
         result = prime * result + ((getUserId() == null) ? 0 : getUserId().hashCode());
-        result = prime * result + ((getAmount() == null) ? 0 : getAmount().hashCode());
-        result = prime * result + ((getStatus() == null) ? 0 : getStatus().hashCode());
+        result = prime * result + ((getAmount() == null) ? 0 : getAmount().hashCode()); ;
         return result;
     }
 

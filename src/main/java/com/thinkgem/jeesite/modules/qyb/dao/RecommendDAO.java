@@ -16,4 +16,6 @@ public interface RecommendDAO extends CrudDao<Recommend> {
 
   List<WUser> getTeam(@Param("userId") String userId);
 
+  int updateAp(@Param("userId") String userId );
+
 }

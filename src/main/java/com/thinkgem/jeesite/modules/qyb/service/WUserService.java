@@ -62,5 +62,10 @@ public class WUserService extends CrudService<UserDAO, WUser> {
     return dao.subPh(id);
   }
 
+  @Transactional(readOnly = false)
+  public int updateBal(String userId){
+    return dao.updateBal(userId);
+  }
+
 
 }

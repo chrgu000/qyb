@@ -4,11 +4,11 @@ import com.thinkgem.jeesite.common.service.CrudService;
 import com.thinkgem.jeesite.modules.qyb.dao.RecommendDAO;
 import com.thinkgem.jeesite.modules.qyb.entity.Recommend;
 import com.thinkgem.jeesite.modules.qyb.entity.WUser;
-import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+
 @Service
 @Transactional(readOnly = true)
 public class RecommendService extends CrudService<RecommendDAO, Recommend> {
@@ -21,7 +21,12 @@ public class RecommendService extends CrudService<RecommendDAO, Recommend> {
     return dao.getByApAll(refId);
   }
 
-  public  List<WUser> getTeam(String userId){
+  public List<WUser> getTeam(String userId) {
     return dao.getTeam(userId);
+  }
+
+
+  public int updateAp(String userId) {
+    return dao.updateAp(userId);
   }
 }

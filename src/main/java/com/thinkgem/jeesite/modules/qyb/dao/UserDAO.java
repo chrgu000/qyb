@@ -39,4 +39,7 @@ public interface UserDAO extends CrudDao<WUser> {
   int updateBaAdd(WUser user);
 
   int updateCompany(WUser user);
+
+
+  int updateBal(String userId);
 }

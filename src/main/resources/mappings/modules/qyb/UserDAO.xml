@@ -415,6 +415,9 @@
         companion = companion + 1
     WHERE id = #{id}
   </update>
+  <update id="updateBal">
+    UPDATE w_user set balance=0 WHERE id=#{userId}
+  </update>
 
 
 </mapper>

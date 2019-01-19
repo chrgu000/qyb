@@ -106,6 +106,12 @@
     WHERE applicant_user_id=#{refId}
   </select>
 
+  <update id="updateAp">
+    UPDATE w_recommend SET is_pay='1'
+    WHERE applicant_user_id = #{userId}
+
+  </update>
+
     <select id="getTeam" resultType="com.thinkgem.jeesite.modules.qyb.entity.WUser">
     SELECT
      u.id AS "id",
@@ -115,5 +121,6 @@
      FROM w_recommend r
      JOIN w_user u ON r.applicant_user_id=u.id
     WHERE referrer_user_id =#{userId}
+      AND is_pay='1'
   </select>
 </mapper>
