@@ -10,4 +10,13 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class ApplyService extends CrudService<ApplyCaseDAO, ApplyCash> {
 
+
+  public ApplyCash selectStatus(String  userId){
+    return dao.selectStatus(userId);
+  }
+  @Transactional(readOnly = false)
+  public int updateSt(String id){
+    return dao.updateSt(id);
+  }
+
 }

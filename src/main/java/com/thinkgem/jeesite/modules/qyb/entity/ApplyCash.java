@@ -25,6 +25,16 @@ public class ApplyCash extends DataEntity<ApplyCash> {
      */
     private int status;
 
+    private WUser user;
+
+    public WUser getUser() {
+        return user;
+    }
+
+    public void setUser(WUser user) {
+        this.user = user;
+    }
+
     private static final long serialVersionUID = 1L;
 
     public String getUserId() {

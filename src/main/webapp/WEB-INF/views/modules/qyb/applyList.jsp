@@ -15,17 +15,17 @@
 </head>
 <body>
 <ul class="nav nav-tabs">
-    <li class="active"><a href="${ctx}/qyb/wUser/list">用户列表</a></li>
+    <li class="active"><a href="${ctx}/qyb/apply/list">申请列表</a></li>
 </ul>
-<form:form id="searchForm" action="${ctx}/qyb/wUser/list" method="post" class="breadcrumb form-search">
+<form:form id="searchForm"  modelAttribute="applyCash"  action="${ctx}/qyb/apply/list" method="post" class="breadcrumb form-search">
     <input id="pageNo" name="pageNo" type="hidden" value="${page.pageNo}"/>
     <input id="pageSize" name="pageSize" type="hidden" value="${page.pageSize}"/>
     <div>
-        <label>用户名：</label><input id="name" name="name" type="text" maxlength="50" class="input-mini"
+        <label>用户名：</label><input id="user.name" name="user.name" type="text" maxlength="50" class="input-mini"
                                   value="${user.name}"/>
 
-        <label>公司名称：</label><input id="company.name" name="company.name" type="text" maxlength="50" class="input-mini"
-                                   value="${user.company.name}"/>
+<%--        <label>提现金额：</label><input id="amount" name="amount" type="text" maxlength="50" class="input-mini"
+                                   value="${amount}"/>--%>
             <%--</div>
 
             <div style="margin-top:8px;">--%>
@@ -48,13 +48,8 @@
 <table id="contentTable" class="table table-striped table-bordered table-condensed">
     <thead>
     <tr>
-        <th>姓名</th>
-        <th>用户类型</th>
-        <th>所属公司</th>
-        <th>职位</th>
-        <th>手机号码</th>
-        <th>余额</th>
-        <th>注册时间</th>
+        <th>用户名</th>
+        <th>提现申请时间</th>
         <th>操作</th>
     </thead>
     <tbody><%
@@ -63,19 +58,17 @@
     %>
     <c:forEach items="${page.list}" var="item">
         <tr>
-            <td>${item.name}</td>
-            <td>${fns:getDictLabels(item.vipLevel, 'vip_level', '普通用户')}
+            <td>${item.user.name}</td>
+            <td> <fmt:formatDate value="${item.createDate}" type="both" pattern="yyyy-MM-dd HH:mm:ss"/>
             </td>
-            <td>${item.company.name}</td>
-            <td>${item.position}</td>
-            <td>${item.mobile}</td>
-            <td>${item.balance}</td>
+           <%-- <td>${item.status}</td>--%>
             <td>
-                    <fmt:formatDate value="${item.createDate}" type="both" pattern="yyyy-MM-dd HH:mm:ss"/>
-            <td>
-                <a href="${ctx}/qyb/wUser/form?id=${item.id}">修改</a>
-<%--                <a href="${ctx}/qyb/wUser/delete?id=${item.id}"
-                   onclick="return confirmx('确认要删除这条信息？', this.href)">删除</a>--%>
+                <c:if test="${item.status eq '1'}">
+                    <a href="${ctx}/qyb/apply/updateSt?id=${item.id}&userId=${item.user.id}">同意</a>
+                </c:if>
+                <c:if test="${item.status eq '2'}">
+                    已通过
+                </c:if>
             </td>
         </tr>
     </c:forEach>

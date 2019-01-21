@@ -8,4 +8,9 @@ import com.thinkgem.jeesite.modules.qyb.entity.ApplyCash;
 public interface ApplyCaseDAO extends CrudDao<ApplyCash> {
 
 
+   ApplyCash selectStatus(String  userId);
+
+  int updateSt(String id);
+
+
 }

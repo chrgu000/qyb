@@ -4,7 +4,9 @@ package com.thinkgem.jeesite.modules.qyb.web;
 import com.thinkgem.jeesite.common.persistence.Page;
 import com.thinkgem.jeesite.common.utils.StringUtils;
 import com.thinkgem.jeesite.common.web.BaseController;
+import com.thinkgem.jeesite.modules.qyb.entity.ApplyCash;
 import com.thinkgem.jeesite.modules.qyb.entity.WUser;
+import com.thinkgem.jeesite.modules.qyb.service.ApplyService;
 import com.thinkgem.jeesite.modules.qyb.service.WUserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,58 +24,37 @@ import javax.servlet.http.HttpServletResponse;
 public class ApplyController extends BaseController {
 
   @Resource
-  private WUserService wUserService;
+  private ApplyService applyService;
+  @Resource
+  private WUserService userService;
 
   @RequestMapping(value = "form")
-  public String form(WUser wUser) {
+  public String form(ApplyCash applyCash) {
     return "modules/qyb/userForm";
   }
 
-  @ModelAttribute("user")
-  public WUser get(@RequestParam(required = false) String id, Model model) {
+  @ModelAttribute("applyCash")
+  public ApplyCash get(@RequestParam(required = false) String id, Model model) {
     if (StringUtils.isNoneBlank(id)) {
-      return wUserService.get(id);
+      return applyService.get(id);
     } else {
-      return new WUser();
+      return new ApplyCash();
     }
   }
 
   @RequestMapping(value = "list")
-  public String list(HttpServletResponse response, HttpServletRequest request, WUser user, Model model) {
-    Page<WUser> page = wUserService.findPage(new Page<>(request, response), user);
+  public String list(HttpServletResponse response, HttpServletRequest request, ApplyCash applyCash, Model model) {
+    Page<ApplyCash> page = applyService.findPage(new Page<>(request, response), applyCash);
     model.addAttribute("page", page);
-    return "modules/qyb/userList";
+    model.addAttribute("applyCash", applyCash);
+    return "modules/qyb/applyList";
   }
 
-  @RequestMapping(value = "updateLevel")
-  public String updateLevel(Model model, WUser user) {
-    if (user.getVipLevel() == 1) {
-      user.setVipLevel(1);
-      user.setAdvCount(0);
-      user.setPhCount(0);
-    } else if (user.getVipLevel() == 2) {
-      //推广经理
-      user.setVipLevel(2);
-      user.setAdvCount(0);
-      user.setPhCount(0);
-    } else if (user.getVipLevel() == 3) {
-      //VIP
-      user.setVipLevel(3);
-      user.setAdvCount(30);
-      user.setPhCount(380);
-    } else if (user.getVipLevel() == 4) {
-      //SVIP
-      user.setVipLevel(4);
-      user.setAdvCount(50);
-      user.setPhCount(1000);
-    } else if (user.getVipLevel() == 5) {
-      //SSVIP
-      user.setVipLevel(5);
-      user.setAdvCount(0);
-      user.setPhCount(0);
-    }
-    wUserService.updateByOpenid(user);
-    addMessage(model, "修改成功！");
-    return "redirect:" + adminPath + "/qyb/wUser/list?id=" + user.getId();
+  @RequestMapping(value = "updateSt")
+  public String updateLevel(Model model, String id,String userId) {
+    applyService.updateSt(id);
+    userService.updateBal(userId);
+    addMessage(model, "操作成功！");
+    return "redirect:" + adminPath + "/qyb/apply/list?id=" + id;
   }
 }
