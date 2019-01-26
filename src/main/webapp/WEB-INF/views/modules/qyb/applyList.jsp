@@ -50,7 +50,8 @@
     <tr>
         <th>用户名</th>
         <th>提现申请时间</th>
-        <th>操作</th>
+        <th>金额</th>
+        <th>提现申请时间</th>
     </thead>
     <tbody><%
         request.setAttribute("strEnter", "\n");
@@ -61,6 +62,7 @@
             <td>${item.user.name}</td>
             <td> <fmt:formatDate value="${item.createDate}" type="both" pattern="yyyy-MM-dd HH:mm:ss"/>
             </td>
+            <td>${item.amount}</td>
            <%-- <td>${item.status}</td>--%>
             <td>
                 <c:if test="${item.status eq '1'}">
